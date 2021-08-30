@@ -1,4 +1,4 @@
- '''
+'''
 CalciumGAN/infer.py Copyright (C) 2021 Sharif Amit Kamran
 
 This program is free software; you can redistribute it and/or modify
@@ -57,7 +57,7 @@ def normalize_pred(img,g_global_model,g_local_model):
     img_coarse = tf.image.resize(img, (32,32), method=tf.image.ResizeMethod.LANCZOS3)
     img_coarse = (img_coarse - 127.5) / 127.5
     img_coarse = np.array(img_coarse)
-    
+
     X_fakeB_coarse,x_global = g_global_model.predict(img_coarse)
     X_fakeB_coarse = (X_fakeB_coarse+1)/2.0
     pred_img_coarse = X_fakeB_coarse[:,:,:,0]
@@ -73,7 +73,7 @@ def strided_crop(img, img_h,img_w,height, width,g_global_model,g_local_model,str
 
     full_prob = np.zeros((img_h, img_w),dtype=np.float32)
     full_sum = np.ones((img_h, img_w),dtype=np.float32)
-    
+
     max_x = int(((img.shape[0]-height)/stride)+1)
     max_y = int(((img.shape[1]-width)/stride)+1)
     max_crops = (max_x)*(max_y)
@@ -90,7 +90,7 @@ def strided_crop(img, img_h,img_w,height, width,g_global_model,g_local_model,str
     return out_img
 
 def threshold(img,thresh):
-    
+
     binary_map = (img > thresh).astype(np.uint8)
     binary_map[binary_map==1] = 255
     return binary_map
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--in_dir', type=str, default='test', help='path/to/save/dir')
-    parser.add_argument('--weight_name', type=str, default='test', help='.h5 file name')    
+    parser.add_argument('--weight_name', type=str, default='test', help='.h5 file name')
     parser.add_argument('--stride', type=int, default=3)
     parser.add_argument('--crop_size', type=int, default=64)
     parser.add_argument('--threshold', type=int, default=50)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     g_local_model = fine_generator(x_global,img_shape)
     g_local_model.load_weights('weight_file/local_model_'+weight_name+'.h5')
     g_local_model.compile(loss='mse', optimizer=opt)
-    
+
     img_shape_g = (32,32,1)
     g_global_model = coarse_generator(img_shape_g,n_downsampling=2, n_blocks=9, n_channels=1)
     g_global_model.load_weights('weight_file/global_model_'+weight_name+'.h5')

@@ -1,4 +1,4 @@
- '''
+'''
 CalciumGAN/model.py Copyright (C) 2021 Sharif Amit Kamran
 
 This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ class ReflectionPadding2D(Layer):
         super(ReflectionPadding2D, self).__init__(**kwargs)
     def get_config(self):
       cfg = super().get_config()
-      return cfg   
+      return cfg
 
     def compute_output_shape(self, s):
         """ If you are using "channels_last" configuration"""
@@ -147,11 +147,11 @@ def coarse_generator(img_shape=(256, 256, 3),ncf=64, n_downsampling=2, n_blocks=
 
 
     # Upsampling layers
-    up_filters  =int(ncf * pow(2,(n_downsampling - 0)) / 2) 
+    up_filters  =int(ncf * pow(2,(n_downsampling - 0)) / 2)
     X_up1 = decoder_block(X,up_filters,0)
     X_up1_att = Attention(X_down1,128,0)
     X_up1_add = Add(name="skip_1")([X_up1_att,X_up1])
-    up_filters  =int(ncf * pow(2,(n_downsampling - 1)) / 2) 
+    up_filters  =int(ncf * pow(2,(n_downsampling - 1)) / 2)
     X_up2 = decoder_block(X_up1_add,up_filters,1)
     X_up2_att = Attention(X_pre_down,64,1)
     X_up2_add = Add(name="skip_2")([X_up2_att,X_up2])
@@ -170,13 +170,13 @@ def coarse_generator(img_shape=(256, 256, 3),ncf=64, n_downsampling=2, n_blocks=
 
 def fine_generator(x_coarse_shape=(256,256,64),input_shape=(512, 512, 3), nff=64, n_blocks=3, n_coarse_gen=1,n_channels = 1):
 
-    
+
     X_input = Input(shape=input_shape,name="input")
     X_coarse = Input(shape=x_coarse_shape,name="x_input")
     print("X_coarse",X_coarse.shape)
     for i in range(1, n_coarse_gen+1):
-        
-        
+
+
         # Downsampling layers
         down_filters = nff * (2**(n_coarse_gen-i))
         X = ReflectionPadding2D((3,3),name="rf_"+str(i))(X_input)
