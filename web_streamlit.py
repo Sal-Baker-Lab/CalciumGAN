@@ -9,7 +9,7 @@ def predict_image(image):
     return image
 
 def post_process_image(image):
-    col3.header("Post Process Image")
+    col3.header("Threshold Image")
     col3.image(image, use_column_width=True)
 
 
@@ -33,22 +33,7 @@ input_image_buffer = st.sidebar.file_uploader("Upload an image", type=["jpg", "j
 
 if input_image_buffer is not None:
     input_image = Image.open(input_image_buffer)
-    col1.header("Original")
+    col1.header("Input Image")
     col1.image(input_image, use_column_width=True)
     predicted_image = predict_image(input_image)
     post_process_image(predicted_image)
-
-
-
-
-
-
-# print(image)
-# img_array = np.array(image)
-#
-# if image is not None:
-#     st.image(
-#         image,
-#         caption=f"You amazing image has shape {img_array.shape[0:2]}",
-#         use_column_width=True,
-#     )
