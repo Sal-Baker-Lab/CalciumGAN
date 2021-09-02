@@ -50,8 +50,8 @@ import pycm
 import warnings
 warnings.filterwarnings('ignore')
 
+dirname = os.path.dirname(__file__)
 
-# return predicted images
 def normalize_pred(img,g_global_model,g_local_model):
     img = np.reshape(img,[1,64,64,1])
     img_coarse = tf.image.resize(img, (32,32), method=tf.image.ResizeMethod.LANCZOS3)
@@ -111,7 +111,6 @@ if __name__ == "__main__":
     parser.add_argument('--weight_name', type=str, default='test', help='.h5 file name')
     parser.add_argument('--stride', type=int, default=3)
     parser.add_argument('--crop_size', type=int, default=64)
-    # value between 1 and 100
     parser.add_argument('--threshold', type=int, default=50)
     parser.add_argument('--connectivity',type=int,default=8,choices=[4,8], help='connected component connectivity, either 4 or 8')
     args = parser.parse_args()
@@ -150,14 +149,7 @@ if __name__ == "__main__":
     g_global_model.compile(loss='mse',optimizer=opt)
 
     for files in f:
-        fo = files.split('/')
-        img = Image.open(files)
-        img_arr = np.asarray(img)
-        height, width, channel = img_arr.shape
-        filename_with_ext = fo[1].split('.')
-        filename = filename_with_ext[0]
-
-        img_name = in_dir+"/JPEGImages/"+filename+".jpg"
+        img_name = os.path.join(dirname, files)
         img = Image.open(img_name)
         img_arr = np.asarray(img,dtype=np.float32)
         img_arr = img_arr[:,:,0]
@@ -167,19 +159,20 @@ if __name__ == "__main__":
 
         out_img_sv = out_img_sv.astype(np.uint8)
         out_im = Image.fromarray(out_img_sv)
-        out_im_name = directories[0]+'/'+fo[1]
+        out_im_name = os.path.join(dirname, directories[0]+'/'+ os.path.basename(files))
         out_im.save(out_im_name)
 
 
         out_img_thresh = out_img_sv.copy()
         thresh_img = threshold(out_img_thresh,thresh)
         thresh_im = Image.fromarray(thresh_img)
-        thresh_im_name =  directories[1]+'/'+fo[1]
+        thresh_im_name =  os.path.join(dirname, directories[1]+'/'+ os.path.basename(files))
         img.save(thresh_im_name)
+        
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img,connectivity)
-        df_csv_name =  directories[2]+'/'+fo[1]
+        df_csv_name =  os.path.join(dirname, directories[2]+'/'+ os.path.basename(files))
         df.to_csv(df_csv_name)
 
 
