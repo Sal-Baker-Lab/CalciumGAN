@@ -51,7 +51,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-
+# return predicted images
 def normalize_pred(img,g_global_model,g_local_model):
     img = np.reshape(img,[1,64,64,1])
     img_coarse = tf.image.resize(img, (32,32), method=tf.image.ResizeMethod.LANCZOS3)
@@ -111,6 +111,7 @@ if __name__ == "__main__":
     parser.add_argument('--weight_name', type=str, default='test', help='.h5 file name')
     parser.add_argument('--stride', type=int, default=3)
     parser.add_argument('--crop_size', type=int, default=64)
+    # value between 1 and 100
     parser.add_argument('--threshold', type=int, default=50)
     parser.add_argument('--connectivity',type=int,default=8,choices=[4,8], help='connected component connectivity, either 4 or 8')
     args = parser.parse_args()
@@ -149,7 +150,7 @@ if __name__ == "__main__":
     g_global_model.compile(loss='mse',optimizer=opt)
 
     for files in f:
-        fo = files.split('\\')
+        fo = files.split('/')
         img = Image.open(files)
         img_arr = np.asarray(img)
         height, width, channel = img_arr.shape
