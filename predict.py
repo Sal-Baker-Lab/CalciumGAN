@@ -30,7 +30,7 @@ warnings.filterwarnings('ignore')
 dirname = os.path.dirname(__file__)
 
 
-def load_local_model(weight_name):
+def load_local_model(weight_name, opt):
     img_shape = (64,64,1)
     label_shape = (64,64,1)
     x_global = (32,32,64)
@@ -44,7 +44,7 @@ def load_local_model(weight_name):
 
     return g_local_model
 
-def load_global_mode(weight_name):
+def load_global_model(weight_name, opt):
     img_shape_g = (32,32,1)
     weight_files_dir = os.path.join(dirname, 'weight_file/')
     global_weight_filename = weight_files_dir + 'global_model_'+weight_name+'.h5';
@@ -63,7 +63,7 @@ async def process(input_image, run_directory, weight_name='000090', stride=3, cr
 
     opt = Adam()
     local_model = load_local_model(weight_name, opt)
-    global_model = load_global_mode(weight_name, opt)
+    global_model = load_global_model(weight_name, opt)
 
     # pred_image_path = os.path.join(dirname, 'runs/' + run_directory +'/pred_image.jpg')
     # img.save(pred_image_path)
