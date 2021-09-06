@@ -14,8 +14,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-
 '''
 
 
@@ -168,7 +166,7 @@ if __name__ == "__main__":
         thresh_im = Image.fromarray(thresh_img)
         thresh_im_name =  os.path.join(dirname, directories[1]+'/'+ os.path.basename(files))
         img.save(thresh_im_name)
-        
+
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img,connectivity)

@@ -3,8 +3,11 @@ from PIL import Image
 import os
 import glob
 import datetime
+import predict
+import asyncio
 
 dirname = os.path.dirname(__file__)
+
 
 st.set_page_config(page_title="Calcium GAN", page_icon="🧊", layout="wide",initial_sidebar_state="expanded")
 st.markdown("<h1 style='text-align: center; color: blue;'>Calcium GAN</h1>", unsafe_allow_html=True)
@@ -16,8 +19,8 @@ stride_selector = st.sidebar.slider('slider' , min_value=0 , max_value=10 , valu
 crop_selector = st.sidebar.slider('crop' , min_value=0 , max_value=200 , value=64 , step=1)
 input_image_buffer = st.sidebar.file_uploader("Upload an image", type=["jpg", "jpeg"])
 
-def predict(run_directory):
-    print('test')
+def process(image, run_directory):
+    asyncio.run(predict.process(image, run_directory))
 
 
 def refresh_runs_dir():
@@ -52,18 +55,39 @@ if option is not None:
         col3.image(thresh_image, use_column_width=True)
 
 
-def form_callback(input_image):
-    run_dir = dirname + "/runs/"
-    run_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-    new_directory = os.path.join(run_dir, str(run_timestamp))
-    os.mkdir(new_directory)
-    input_image.save(new_directory + '/input_image.jpg')
+def form_callback():
+    # run_dir = dirname + "/runs/"
+    # run_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    # new_directory = os.path.join(run_dir, str(run_timestamp))
+    # os.mkdir(new_directory)
+    # input_image.save(new_directory + '/input_image.jpg')
     refresh_runs_dir()
-    predict(new_directory)
+    # # process(new_directory)
+
+# if submit_button:
+
+    # run_dir = dirname + "/runs/"
+    # run_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    # new_directory = os.path.join(run_dir, str(run_timestamp))
+    # os.mkdir(new_directory)
+    # input_image.save(new_directory + '/input_image.jpg')
+    # refresh_runs_dir()
+    # process(new_directory)
 
 with st.sidebar.form(key='run_form'):
     if input_image_buffer is not None:
         input_image = Image.open(input_image_buffer)
         col1.header("Input Image")
         col1.image(input_image, use_column_width=True)
-        submit_button = st.form_submit_button(label='Submit', on_click=form_callback(input_image))
+        # user_input = st.sidebar.text_input("Run label", "run_")
+        # submit_button = st.form_submit_button(label='Submit', on_click=form_callback(input_image))
+        submit_button = st.form_submit_button(label='Submit', on_click=form_callback)
+
+        if submit_button:
+            run_dir = dirname + "/runs/"
+            run_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+            run_directory = os.path.join(run_dir, str(run_timestamp))
+            os.mkdir(run_directory)
+            input_image.save(run_directory + '/input_image.jpg')
+            refresh_runs_dir()
+            process(input_image, run_timestamp)
