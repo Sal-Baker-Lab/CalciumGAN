@@ -23,8 +23,12 @@ from sklearn.metrics import confusion_matrix,jaccard_similarity_score,f1_score,r
 import gc
 import glob
 import pycm
+
 import warnings
 warnings.filterwarnings('ignore')
+
+import keras.backend.tensorflow_backend as tb
+tb._SYMBOLIC_SCOPE.value = True
 
 
 dirname = os.path.dirname(__file__)
