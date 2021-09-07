@@ -112,7 +112,7 @@ def load_global_model(weight_name, opt):
     return g_global_model
 
 
-def process(input_image, run_directory, weight_name='000090', stride=3, crop_size=64, threshold=50, connectivity=8):
+async def process(input_image, run_directory, weight_name='000090', stride=3, crop_size=64, thresh=50, connectivity=8):
 
     # await asyncio.sleep(5)
     K.clear_session()
@@ -141,7 +141,7 @@ def process(input_image, run_directory, weight_name='000090', stride=3, crop_siz
 
 
     out_img_thresh = out_img_sv.copy()
-    thresh_img = threshold(out_img_thresh, threshold)
+    thresh_img = threshold(out_img_thresh, thresh)
     thresh_im = Image.fromarray(thresh_img)
     threshold_image_path = os.path.join(dirname, 'runs/' + run_directory +'/thresh_image.jpg')
     thresh_im.save(threshold_image_path)

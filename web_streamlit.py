@@ -22,7 +22,7 @@ crop_selector = st.sidebar.slider('crop' , min_value=0 , max_value=200 , value=6
 input_image_buffer = st.sidebar.file_uploader("Upload an image", type=["jpg", "jpeg"])
 
 def process(image, run_directory):
-    predict.process(image, run_directory)
+    asyncio.run(predict.process(image, run_directory))
 
 
 def refresh_runs_dir():
