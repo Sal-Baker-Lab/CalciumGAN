@@ -33,6 +33,59 @@ tb._SYMBOLIC_SCOPE.value = True
 
 dirname = os.path.dirname(__file__)
 
+def normalize_pred(img,g_global_model,g_local_model):
+    img = np.reshape(img,[1,64,64,1])
+    img_coarse = tf.image.resize(img, (32,32), method=tf.image.ResizeMethod.LANCZOS3)
+    img_coarse = (img_coarse - 127.5) / 127.5
+    img_coarse = np.array(img_coarse)
+
+    X_fakeB_coarse,x_global = g_global_model.predict(img_coarse)
+    X_fakeB_coarse = (X_fakeB_coarse+1)/2.0
+    pred_img_coarse = X_fakeB_coarse[:,:,:,0]
+
+
+    img = (img - 127.5) / 127.5
+    X_fakeB = g_local_model.predict([img,x_global])
+    X_fakeB = (X_fakeB+1)/2.0
+    pred_img = X_fakeB[:,:,:,0]
+    return [np.asarray(pred_img,dtype=np.float32),np.asarray(pred_img_coarse,dtype=np.float32)]
+
+def strided_crop(img, img_h,img_w,height, width,g_global_model,g_local_model,stride=1):
+
+    full_prob = np.zeros((img_h, img_w),dtype=np.float32)
+    full_sum = np.ones((img_h, img_w),dtype=np.float32)
+
+    max_x = int(((img.shape[0]-height)/stride)+1)
+    max_y = int(((img.shape[1]-width)/stride)+1)
+    max_crops = (max_x)*(max_y)
+    i = 0
+    for h in range(max_x):
+        for w in range(max_y):
+            crop_img_arr = img[h * stride:(h * stride) + height,w * stride:(w * stride) + width]
+            [pred,pred_256] = normalize_pred(crop_img_arr,g_global_model,g_local_model)
+            full_prob[h * stride:(h * stride) + height,w * stride:(w * stride) + width] += pred[0]
+            full_sum[h * stride:(h * stride) + height,w * stride:(w * stride) + width] += 1
+            i = i + 1
+            #print(i)
+    out_img = full_prob / full_sum
+    return out_img
+
+def threshold(img,thresh):
+
+    binary_map = (img > thresh).astype(np.uint8)
+    binary_map[binary_map==1] = 255
+    return binary_map
+
+def connected_component(img,connectivity=8):
+
+    binary_map = (img > 127).astype(np.uint8)
+    output = cv2.connectedComponentsWithStats(binary_map, connectivity, cv2.CV_32S)
+    stats = output[2]
+    df = pd.DataFrame(stats[1:])
+    df.columns = ['Left','Top','Width','Height','Area']
+    return df
+
+
 
 def load_local_model(weight_name, opt):
     img_shape = (64,64,1)
@@ -65,21 +118,19 @@ def process(input_image, run_directory, weight_name='000090', stride=3, crop_siz
     K.clear_session()
     gc.collect()
 
-    opt = Adam()
-    local_model = load_local_model(weight_name, opt)
-    global_model = load_global_model(weight_name, opt)
+    crop_size_h = crop_size
+    crop_size_w = crop_size
 
-    # pred_image_path = os.path.join(dirname, 'runs/' + run_directory +'/pred_image.jpg')
-    # img.save(pred_image_path)
-    # threshold_image_path = os.path.join(dirname, 'runs/' + run_directory +'/thresh_image.jpg')
-    # img.save(threshold_image_path)
-    # quant_csv_path = os.path.join(dirname, 'runs/' + run_directory +'/quant_csv.csv')
+    opt = Adam()
+    g_local_model = load_local_model(weight_name, opt)
+    g_global_model = load_global_model(weight_name, opt)
+
 
     img_name_path = os.path.join(dirname, 'runs/' + run_directory +'/input_image.jpg')
     img = Image.open(img_name_path)
     img_arr = np.asarray(img,dtype=np.float32)
     img_arr = img_arr[:,:,0]
-    out_img = strided_crop(img_arr, img_arr.shape[0], img_arr.shape[1], crop_size_h, crop_size_w,g_global_model,g_local_model,stride)
+    out_img = strided_crop(img_arr, img_arr.shape[0], img_arr.shape[1], crop_size_h, crop_size_w, g_global_model, g_local_model, stride)
     out_img_sv = out_img.copy()
     out_img_sv = ((out_img_sv) * 255.0).astype('uint8')
 
@@ -90,7 +141,7 @@ def process(input_image, run_directory, weight_name='000090', stride=3, crop_siz
 
 
     out_img_thresh = out_img_sv.copy()
-    thresh_img = threshold(out_img_thresh,thresh)
+    thresh_img = threshold(out_img_thresh, threshold)
     thresh_im = Image.fromarray(thresh_img)
     threshold_image_path = os.path.join(dirname, 'runs/' + run_directory +'/thresh_image.jpg')
     thresh_im.save(threshold_image_path)
