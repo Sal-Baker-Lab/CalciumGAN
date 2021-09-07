@@ -151,6 +151,8 @@ def process(input_image, run_directory, weight_name='000090', stride=3, crop_siz
     quant_csv_path = os.path.join(dirname, 'runs/' + run_directory +'/quant_csv.csv')
     df.to_csv(quant_csv_path)
 
+if __name__ == "__main__":
+    process(None, '2021-09-06 05:09:40.722')
 
 
 
