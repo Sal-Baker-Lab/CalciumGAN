@@ -59,10 +59,10 @@ def load_global_model(weight_name, opt):
     return g_global_model
 
 
-async def process(input_image, run_directory, weight_name='000090', stride=3, crop_size=64, threshold=50, connectivity=8):
+def process(input_image, run_directory, weight_name='000090', stride=3, crop_size=64, threshold=50, connectivity=8):
 
-    await asyncio.sleep(5)
-    # K.clear_session()
+    # await asyncio.sleep(5)
+    K.clear_session()
     gc.collect()
 
     opt = Adam()
