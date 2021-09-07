@@ -12,11 +12,11 @@ dirname = os.path.dirname(__file__)
 
 
 st.set_page_config(page_title="Calcium GAN", page_icon="🧊", layout="wide",initial_sidebar_state="expanded")
-st.markdown("<h1 style='text-align: center; color: blue;'>Calcium GAN</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: black;'>Calcium GAN</h1>", unsafe_allow_html=True)
 
 col1, col2, col3, col4 = st.columns(4)
 # Config
-st.title("Calcium GAN")
+# st.title("Calcium GAN")
 stride_selector = st.sidebar.slider('slider' , min_value=0 , max_value=10 , value=3 , step=1)
 crop_selector = st.sidebar.slider('crop' , min_value=0 , max_value=200 , value=64 , step=1)
 input_image_buffer = st.sidebar.file_uploader("Upload an image", type=["jpg", "jpeg"])
