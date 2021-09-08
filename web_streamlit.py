@@ -66,9 +66,9 @@ if option is not None:
 
     with quant_csv_expander:
         if os.path.isfile(quant_filename):
-            dataframe = None
-        else:
             dataframe = pd.read_csv(quant_filename)
+        else:
+            dataframe = None
         AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
 
 
