@@ -64,9 +64,11 @@ if option is not None:
         col3.header("Threshold Image")
         col3.image(thresh_image, use_column_width=True)
 
-    if os.path.isfile(quant_filename):
         with quant_csv_expander:
-            dataframe = pd.read_csv(quant_filename)
+            if os.path.isfile(quant_filename):
+                dataframe = None
+            else:
+                dataframe = pd.read_csv(quant_filename)
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
 
 
