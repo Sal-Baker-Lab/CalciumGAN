@@ -40,8 +40,7 @@ def refresh_runs_dir():
 if 'runs' not in st.session_state:
     refresh_runs_dir()
 
-# load output of selected run
-option = st.sidebar.selectbox('Select Run',  st.session_state.runs)
+
 if option is not None:
     run_dir = dirname + "/runs/" + option
     input_image_filename = os.path.join(run_dir, 'input_image.jpg')
