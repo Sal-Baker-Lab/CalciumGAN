@@ -111,8 +111,14 @@ def load_global_model(weight_name, opt):
 
     return g_global_model
 
+# max (stride)  = width - crop size
 
-async def process(input_image, run_directory, weight_name='000090', stride=3, crop_size=64, thresh=50, connectivity=8):
+# crop_size = 64  (trained on)
+# threshold 1 and 254 (default 32)
+#stride start 3, max = width - crop_szie
+# connectivity 4, and 8
+
+def process(input_image, run_directory, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
 
     # await asyncio.sleep(5)
     K.clear_session()

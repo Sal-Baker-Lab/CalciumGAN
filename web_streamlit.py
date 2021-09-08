@@ -22,7 +22,7 @@ crop_selector = st.sidebar.slider('crop' , min_value=0 , max_value=200 , value=6
 input_image_buffer = st.sidebar.file_uploader("Upload an image", type=["jpg", "jpeg"])
 
 def process(image, run_directory):
-    asyncio.run(predict.process(image, run_directory))
+    predict.process(image, run_directory)
 
 
 def refresh_runs_dir():
@@ -58,23 +58,7 @@ if option is not None:
 
 
 def form_callback():
-    # run_dir = dirname + "/runs/"
-    # run_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-    # new_directory = os.path.join(run_dir, str(run_timestamp))
-    # os.mkdir(new_directory)
-    # input_image.save(new_directory + '/input_image.jpg')
     refresh_runs_dir()
-    # # process(new_directory)
-
-# if submit_button:
-
-    # run_dir = dirname + "/runs/"
-    # run_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-    # new_directory = os.path.join(run_dir, str(run_timestamp))
-    # os.mkdir(new_directory)
-    # input_image.save(new_directory + '/input_image.jpg')
-    # refresh_runs_dir()
-    # process(new_directory)
 
 with st.sidebar.form(key='run_form'):
     if input_image_buffer is not None:
