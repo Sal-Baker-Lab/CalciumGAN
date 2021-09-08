@@ -20,7 +20,7 @@ quant_csv_expander = st.expander(label='Quant CSV')
 
 
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3= st.columns(3)
 # Config
 # st.title("Calcium GAN")
 threshold_selector = st.sidebar.slider('Threshold' , min_value=3 , max_value=15 , value=6 , step=1)
