@@ -18,6 +18,8 @@ st.markdown("<h1 style='text-align: center; color: black;'>Calcium GAN</h1>", un
 
 quant_csv_expander = st.expander(label='Quant CSV')
 
+input_image_buffer = st.sidebar.file_uploader("Upload an image", type=["jpg", "jpeg"])
+option = st.sidebar.selectbox('Select Run',  st.session_state.runs)
 
 col1, col2, col3= st.columns(3)
 # Config
@@ -25,7 +27,6 @@ col1, col2, col3= st.columns(3)
 threshold_selector = st.sidebar.slider('Threshold' , min_value=3 , max_value=254 , value=6 , step=1)
 connectivity = st.sidebar.slider('Connectivity' , min_value=4 , max_value=8 , value=4 , step=4)
 
-input_image_buffer = st.sidebar.file_uploader("Upload an image", type=["jpg", "jpeg"])
 
 def process(input_image, run_directory, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
     predict.process(input_image, run_directory, weight_name, stride, crop_size, thresh, connectivity)
