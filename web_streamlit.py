@@ -12,6 +12,17 @@ tb._SYMBOLIC_SCOPE.value = True
 
 dirname = os.path.dirname(__file__)
 
+
+def refresh_runs_dir():
+    runs = filter( os.path.isdir,glob.glob(dirname + '/runs/*'))
+    runs = sorted(runs, key = os.path.getmtime, reverse=True)
+    st.session_state.runs = tuple(map(lambda  x:  os.path.basename(x), runs))
+
+if 'runs' not in st.session_state:
+    refresh_runs_dir()
+
+
+
 im = Image.open(dirname + "/favicon.ico")
 st.set_page_config(page_title="Calcium GAN", page_icon=im, layout="wide",initial_sidebar_state="expanded")
 st.markdown("<h1 style='text-align: center; color: black;'>Calcium GAN</h1>", unsafe_allow_html=True)
