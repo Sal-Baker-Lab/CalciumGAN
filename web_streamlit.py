@@ -10,8 +10,8 @@ tb._SYMBOLIC_SCOPE.value = True
 
 dirname = os.path.dirname(__file__)
 
-
-st.set_page_config(page_title="Calcium GAN", page_icon="🧊", layout="wide",initial_sidebar_state="expanded")
+im = Image.open(dirname + "/favicon.ico")
+st.set_page_config(page_title="Calcium GAN", page_icon=im, layout="wide",initial_sidebar_state="expanded")
 st.markdown("<h1 style='text-align: center; color: black;'>Calcium GAN</h1>", unsafe_allow_html=True)
 
 col1, col2, col3, col4 = st.columns(4)
