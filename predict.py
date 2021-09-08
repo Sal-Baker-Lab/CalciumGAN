@@ -118,6 +118,11 @@ def load_global_model(weight_name, opt):
 #stride start 3, max = width - crop_szie
 # connectivity 4, and 8
 
+# view xls v download
+
+# progress bar
+
+
 def process(input_image, run_directory, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
 
     # await asyncio.sleep(5)
