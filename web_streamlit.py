@@ -100,5 +100,4 @@ with st.sidebar.form(key='run_form'):
             input_image_name = run_id + '_original_' + params + original_image_name
             input_image.save(run_dir  + input_image_name)
             refresh_runs_dir()
-            option.
             process(input_image, input_image_name)
