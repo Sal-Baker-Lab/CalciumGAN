@@ -147,14 +147,14 @@ def process(input_image, original_image_name, weight_name='000090', stride=16, c
 
     out_img_sv = out_img_sv.astype(np.uint8)
     out_im = Image.fromarray(out_img_sv)
-    pred_image_path = os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_prediction_'))
+    pred_image_path =  os.path.join(dirname, 'runs/prediction_' + original_image_name)
     out_im.save(pred_image_path)
 
 
     out_img_thresh = out_img_sv.copy()
     thresh_img = threshold(out_img_thresh, thresh)
     thresh_im = Image.fromarray(thresh_img)
-    threshold_image_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_threshold_'))
+    threshold_image_path =  os.path.join(dirname, 'runs/threshold_' + original_image_name)
     thresh_im.save(threshold_image_path)
 
     cc_img = thresh_img.copy()
