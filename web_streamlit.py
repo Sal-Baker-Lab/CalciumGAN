@@ -53,7 +53,8 @@ if option is not None:
     input_image_filename = os.path.join(run_dir, option)
     pred_image_filename = os.path.join(run_dir, option.replace('_original_', '_prediction_'))
     thresh_image_filename = os.path.join(run_dir, option.replace('_original_', '_threshold_'))
-    quant_filename = os.path.join(run_dir, 'quant_csv.csv')
+    quant_filename = os.path.join(run_dir, option.replace('_original_', '_quant_'))
+    quant_filename = quant_filename.replace('.jpg', 'csv')
 
     if os.path.isfile(input_image_filename):
         input_image = Image.open(input_image_filename)

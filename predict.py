@@ -159,7 +159,8 @@ def process(input_image, original_image_name, weight_name='000090', stride=16, c
 
     cc_img = thresh_img.copy()
     df = connected_component(cc_img,connectivity)
-    quant_csv_path = os.path.join(dirname, 'runs/quant_' + original_image_name + ".csv")
+    quant_csv_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_quant_'))
+    quant_csv_path = quant_csv_path.replace('jpg', 'csv')
     df.to_csv(quant_csv_path)
 
 if __name__ == "__main__":
