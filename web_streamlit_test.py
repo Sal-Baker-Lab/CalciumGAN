@@ -10,15 +10,15 @@ import base64
 import shutil
 
 dirname = os.path.dirname(__file__)
-def create_download_zip(zip_directory, zip_destination, filename):
-    if os.path.exists(zip_destination + '/' + filename + '.zip'):
-        os.remove(zip_destination + '/' + filename + '.zip')
-    shutil.make_archive(zip_destination + '/' + filename, 'zip', zip_directory)
-    with open(zip_destination + '/' + filename + '.zip', 'rb') as f:
-        bytes = f.read()
-        b64 = base64.b64encode(bytes).decode()
-        href = f'<a href="data:file/zip;base64,{b64}" download=\'{filename}.zip\'>download file </a>'
-        st.sidebar.markdown(href, unsafe_allow_html=True)
+
+im = Image.open(dirname + "/favicon.ico")
+st.set_page_config(page_title="Calcium GAN", page_icon=im, layout="wide",initial_sidebar_state="expanded")
+st.markdown("<h1 style='text-align: center; color: black;'>Calcium GAN</h1>", unsafe_allow_html=True)
+
+top_container = st.container()
+main_container = st.container
+run_container = st.sidebar.container()
+export_container = st.sidebar.container()
 
 
 def params():
@@ -36,24 +36,41 @@ def refresh_runs_dir():
 if 'runs' not in st.session_state:
     refresh_runs_dir()
 
+'''
+Export 
+'''
+def create_download_zip(zip_directory, zip_destination, filename):
+    if os.path.exists(zip_destination + '/' + filename + '.zip'):
+        os.remove(zip_destination + '/' + filename + '.zip')
+    shutil.make_archive(zip_destination + '/' + filename, 'zip', zip_directory)
+    with open(zip_destination + '/' + filename + '.zip', 'rb') as f:
+        bytes = f.read()
+        b64 = base64.b64encode(bytes).decode()
+        href = f'<a href="data:file/zip;base64,{b64}" download=\'{filename}.zip\'>download file </a>'
+        export_container.markdown(href, unsafe_allow_html=True)
 
-im = Image.open(dirname + "/favicon.ico")
-st.set_page_config(page_title="Calcium GAN", page_icon=im, layout="wide",initial_sidebar_state="expanded")
-st.markdown("<h1 style='text-align: center; color: black;'>Calcium GAN</h1>", unsafe_allow_html=True)
-
-quant_csv_expander = st.expander(label='Quant CSV')
-
-input_image_buffer = st.sidebar.file_uploader("Upload an image", type=["jpg", "jpeg"])
-download_runs = st.sidebar.button(label='Download All Runs')
+download_runs = export_container.button(label='Zip and Export All Runs')
 if download_runs:
     run_dir = dirname + "/runs/"
     create_download_zip(run_dir, dirname + '/tmp', 'GanCalcium')
 
-option = st.sidebar.selectbox('Select Run',  st.session_state.runs)
+
+col11, col22= top_container.columns(2)
+option = col11.selectbox('Select Run',  st.session_state.runs)
+
+
+quant_csv_expander = st.expander(label='Quant CSV')
+
+'''
+Run Container
+'''
+
+input_image_buffer = run_container.file_uploader("Upload an image", type=["jpg", "jpeg"])
+threshold_selector = run_container.slider('Threshold' , min_value=3 , max_value=254 , value=6 , step=1)
+connectivity_selector = run_container.slider('Connectivity' , min_value=4 , max_value=8 , value=4 , step=4)
 
 col1, col2, col3= st.columns(3)
-threshold_selector = st.sidebar.slider('Threshold' , min_value=3 , max_value=254 , value=6 , step=1)
-connectivity_selector = st.sidebar.slider('Connectivity' , min_value=4 , max_value=8 , value=4 , step=4)
+
 
 def process(input_image, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
     # predict.process(input_image, run_directory, weight_name, stride, crop_size, thresh, connectivity)
@@ -113,7 +130,7 @@ with st.sidebar.form(key='run_form'):
         col1.image(input_image, use_column_width=True)
         w, h = input_image.size
         stride_selector = st.sidebar.slider('Stride' , min_value=0 , max_value= w-64 , value=3 , step=1)
-        submit_button = st.form_submit_button(label='Submit', on_click=form_callback)
+        submit_button = st.form_submit_button(label='Run Prediction', on_click=form_callback)
 
         if submit_button:
             run_dir = dirname + "/runs/"
