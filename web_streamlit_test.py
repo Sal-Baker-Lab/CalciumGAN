@@ -9,6 +9,7 @@ import time
 import base64
 import shutil
 
+
 dirname = os.path.dirname(__file__)
 
 im = Image.open(dirname + "/favicon.ico")
@@ -16,10 +17,12 @@ st.set_page_config(page_title="Calcium GAN", page_icon=im, layout="wide",initial
 st.markdown("<h1 style='text-align: center; color: black;'>Calcium GAN</h1>", unsafe_allow_html=True)
 
 top_container = st.container()
-main_container = st.container
+main_container = st.container()
 run_container = st.sidebar.container()
+run_container_form = st.sidebar.container()
 export_container = st.sidebar.container()
 
+st.session_state.selection = False
 
 def params():
     return "S_{}_T_{}_C_{}".format(stride_selector, threshold_selector, connectivity_selector)
@@ -31,7 +34,9 @@ def run_id():
 def refresh_runs_dir():
     runs = filter( os.path.isfile ,glob.glob(dirname + '/runs/*original*'))
     runs = sorted(runs, key = os.path.getmtime, reverse=True)
-    st.session_state.runs = tuple(map(lambda  x:  os.path.basename(x), runs))
+    dir = tuple(map(lambda  x:  os.path.basename(x), runs))
+    st.session_state.runs = set(dir)
+
 
 if 'runs' not in st.session_state:
     refresh_runs_dir()
@@ -56,10 +61,7 @@ if download_runs:
 
 
 col11, col22= top_container.columns(2)
-option = col11.selectbox('Select Run',  st.session_state.runs)
 
-
-quant_csv_expander = st.expander(label='Quant CSV')
 
 '''
 Run Container
@@ -69,8 +71,8 @@ input_image_buffer = run_container.file_uploader("Upload an image", type=["jpg",
 threshold_selector = run_container.slider('Threshold' , min_value=3 , max_value=254 , value=6 , step=1)
 connectivity_selector = run_container.slider('Connectivity' , min_value=4 , max_value=8 , value=4 , step=4)
 
-col1, col2, col3= st.columns(3)
-
+quant_csv_expander = main_container.expander(label='Quant CSV')
+col1, col2, col3 = main_container.columns(3)
 
 def process(input_image, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
     # predict.process(input_image, run_directory, weight_name, stride, crop_size, thresh, connectivity)
@@ -81,6 +83,28 @@ def process(input_image, original_image_name, weight_name='000090', stride=16, c
     # print(predicted_image_name)
 
 
+# with st.sidebar.form(key='run_form'):
+if input_image_buffer is not None:
+    input_image = Image.open(input_image_buffer)
+    st.session_state.runs = set()
+    main_container.empty()
+    col1.header("Input Image")
+    col1.image(input_image, use_column_width=True)
+    w, h = input_image.size
+    stride_selector = run_container.slider('Stride' , min_value=0 , max_value= w-64 , value=3 , step=1)
+    submit_button = run_container.button(label='Run Prediction')
+
+    if submit_button:
+        run_dir = dirname + "/runs/"
+        original_image_name = input_image_buffer.name
+        run_id = run_id()
+        params = params()
+        input_image_name = run_id + '_original_' + params + original_image_name
+        input_image.save(run_dir  + input_image_name)
+        refresh_runs_dir()
+        process(input_image, input_image_name)
+
+option = col11.selectbox('Select Run',  options = list(st.session_state.runs))
 if option is not None:
     run_dir = dirname + "/runs/"
     input_image_filename = os.path.join(run_dir, option)
@@ -111,33 +135,3 @@ if option is not None:
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
             dataframe = None
-
-    # submit_button = st.button(label='Submit')
-    # if submit_button:
-    #     create_download_zip(run_dir, dirname + '/tmp', 'GanCalcium')
-
-
-
-def form_callback():
-    print('callback')
-    # refresh_runs_dir()
-
-
-with st.sidebar.form(key='run_form'):
-    if input_image_buffer is not None:
-        input_image = Image.open(input_image_buffer)
-        col1.header("Input Image")
-        col1.image(input_image, use_column_width=True)
-        w, h = input_image.size
-        stride_selector = st.sidebar.slider('Stride' , min_value=0 , max_value= w-64 , value=3 , step=1)
-        submit_button = st.form_submit_button(label='Run Prediction', on_click=form_callback)
-
-        if submit_button:
-            run_dir = dirname + "/runs/"
-            original_image_name = input_image_buffer.name
-            run_id = run_id()
-            params = params()
-            input_image_name = run_id + '_original_' + params + original_image_name
-            input_image.save(run_dir  + input_image_name)
-            refresh_runs_dir()
-            process(input_image, input_image_name)
