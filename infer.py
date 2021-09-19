@@ -102,6 +102,18 @@ def connected_component(img,connectivity=8):
     df.columns = ['Left','Top','Width','Height','Area']
     return df
 
+def overlay(img,mask,alpha=0.7):
+
+    overlay = np.zeros((mask.shape[0],mask.shape[1],3))
+    overlay[mask==255] = 255
+    overlay[:,:,1] = 0
+    overlay[:,:,2] = 0
+    overlay = overlay.astype(np.uint8)
+    overlay_bgr = cv2.cvtColor(overlay, cv2.COLOR_RGB2BGR)
+    dst = cv2.addWeighted(img, alpha, overlay_bgr, 1-alpha, 0)
+    dst = cv2.cvtColor(dst, cv2.COLOR_BGR2RGB)
+    return dst
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -111,6 +123,7 @@ if __name__ == "__main__":
     parser.add_argument('--crop_size', type=int, default=64)
     parser.add_argument('--threshold', type=int, default=50)
     parser.add_argument('--connectivity',type=int,default=8,choices=[4,8], help='connected component connectivity, either 4 or 8')
+    parser.add_argument('--overlay_alpha',type=float,default=0.7, help='alpha value for color overlayed mask on ST-map')
     args = parser.parse_args()
 
 
@@ -121,10 +134,11 @@ if __name__ == "__main__":
     crop_size_h = args.crop_size
     crop_size_w = args.crop_size
     weight_name = args.weight_name
+    alpha = args.overlay_alpha
     thresh = args.threshold
     connectivity = args.connectivity
     in_dir = args.in_dir
-    directories = [in_dir+'/pred',in_dir+'/thresh',in_dir+'/quant_csv']
+    directories = [in_dir+'/pred',in_dir+'/thresh',in_dir+'/quant_csv',in_dir+'/overlay_img']
 
     for d in directories:
         if not os.path.exists(d):
@@ -172,6 +186,13 @@ if __name__ == "__main__":
         df = connected_component(cc_img,connectivity)
         df_csv_name =  os.path.join(dirname, directories[2]+'/'+ os.path.basename(files))
         df.to_csv(df_csv_name)
+
+        ovleray_img = overlay(out_img_sv.copy(),thresh_img.copy(),alpha)
+        ovleray_im = Image.fromarray(ovleray_img)
+        df_csv_name =  os.path.join(dirname, directories[3]+'/'+ os.path.basename(files))
+        ovleray_im.save(ovleray_im_name)
+
+
 
 
 
