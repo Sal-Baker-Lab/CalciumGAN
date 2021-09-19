@@ -169,12 +169,6 @@ def process(input_image, run_dir, original_image_name, weight_name='000090', str
     threshold_image_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_threshold_'))
     thresh_im.save(threshold_image_path)
 
-    out_img_thresh = out_img_sv.copy()
-    thresh_img = threshold(out_img_thresh, thresh)
-    thresh_im = Image.fromarray(thresh_img)
-    threshold_image_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_threshold_'))
-    thresh_im.save(threshold_image_path)
-
     cc_img = thresh_img.copy()
     df = connected_component(cc_img,connectivity)
     quant_csv_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_quant_'))
