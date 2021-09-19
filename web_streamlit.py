@@ -114,6 +114,7 @@ if option is not None:
     input_image_filename = os.path.join(run_dir, option)
     pred_image_filename = os.path.join(run_dir, option.replace('_original_', '_prediction_'))
     thresh_image_filename = os.path.join(run_dir, option.replace('_original_', '_threshold_'))
+    overlay_image_filename = os.path.join(run_dir, option.replace('_original_', '_overlay_'))
     quant_filename = os.path.join(run_dir, option.replace('_original_', '_quant_'))
     quant_filename = quant_filename.replace('.jpg', '.csv')
 
@@ -132,6 +133,11 @@ if option is not None:
         thresh_image = Image.open(thresh_image_filename)
         col3.header("Threshold Image")
         col3.image(thresh_image, use_column_width=True)
+
+    if os.path.isfile(overlay_image_filename):
+        overlay_image = Image.open(overlay_image_filename)
+        col3.header("Overlay Image")
+        col3.image(overlay_image, use_column_width=True)
 
     with quant_csv_expander:
         if os.path.isfile(quant_filename):
