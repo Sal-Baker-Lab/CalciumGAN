@@ -50,8 +50,8 @@ def refresh_runs_dir():
     dir = tuple(map(lambda  x:  os.path.basename(x), runs))
     st.session_state.runs = dir
 
-def process(input_image, run_dir, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
-    predict.process(input_image, run_dir, original_image_name, weight_name, stride, crop_size, thresh, connectivity)
+def process(input_image, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
+    predict.process(input_image, original_image_name, weight_name, stride, crop_size, thresh, connectivity)
     # predicted_image_name = run_dir  + input_image_name.replace('_original_', '_prediction_')
     # threshold_image_name = run_dir  + input_image_name.replace('_original_', '_threshold_')
     # input_image.save(predicted_image_name)

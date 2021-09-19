@@ -135,7 +135,7 @@ def load_global_model(weight_name, opt):
 # progress bar
 
 
-def process(input_image, run_dir, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8, alpha=0.7):
+def process(input_image, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8, alpha=0.7):
 
     # await asyncio.sleep(5)
     K.clear_session()
