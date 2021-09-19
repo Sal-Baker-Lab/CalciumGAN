@@ -5,24 +5,32 @@ import glob
 import pandas as pd
 from st_aggrid import AgGrid
 import random
-import time
 import base64
 import shutil
+from random import randint
 
-
+# Streamlit Page Configuration
 dirname = os.path.dirname(__file__)
-
 im = Image.open(dirname + "/favicon.ico")
-st.set_page_config(page_title="Calcium GAN", page_icon=im, layout="wide",initial_sidebar_state="expanded")
+st.set_page_config(page_title="Calcium GAN", page_icon=im, layout="wide", initial_sidebar_state="expanded")
 st.markdown("<h1 style='text-align: center; color: black;'>Calcium GAN</h1>", unsafe_allow_html=True)
 
-top_container = st.container()
-main_container = st.container()
+
 run_container = st.sidebar.container()
 run_container_form = st.sidebar.container()
+previous_run_container = st.sidebar.container()
 export_container = st.sidebar.container()
 
-st.session_state.selection = False
+main_container = st.container()
+quant_csv_expander = main_container.expander(label='Click to expand and view Quant result')
+col1, col2, col3, col4, col5, col6 = main_container.columns(6)
+
+def genereate_widget_key():
+    st.session_state.file_uploader_widget = str(randint(1000, 100000000))
+    print(st.session_state.file_uploader_widget)
+
+if 'file_uploader_widget' not in st.session_state:
+    genereate_widget_key()
 
 def params():
     return "S_{}_T_{}_C_{}".format(stride_selector, threshold_selector, connectivity_selector)
@@ -35,15 +43,21 @@ def refresh_runs_dir():
     runs = filter( os.path.isfile ,glob.glob(dirname + '/runs/*original*'))
     runs = sorted(runs, key = os.path.getmtime, reverse=True)
     dir = tuple(map(lambda  x:  os.path.basename(x), runs))
-    st.session_state.runs = set(dir)
+    st.session_state.runs = dir
 
+def process(input_image, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
+    # predict.process(input_image, run_directory, weight_name, stride, crop_size, thresh, connectivity)
+    predicted_image_name = run_dir  + input_image_name.replace('_original_', '_prediction_')
+    threshold_image_name = run_dir  + input_image_name.replace('_original_', '_threshold_')
+    input_image.save(predicted_image_name)
+    input_image.save(threshold_image_name)
+    # print(predicted_image_name)
 
 if 'runs' not in st.session_state:
     refresh_runs_dir()
 
-'''
-Export 
-'''
+
+# Export Container
 def create_download_zip(zip_directory, zip_destination, filename):
     if os.path.exists(zip_destination + '/' + filename + '.zip'):
         os.remove(zip_destination + '/' + filename + '.zip')
@@ -60,34 +74,16 @@ if download_runs:
     create_download_zip(run_dir, dirname + '/tmp', 'GanCalcium')
 
 
-col11, col22= top_container.columns(2)
 
+# Run Container
 
-'''
-Run Container
-'''
-
-input_image_buffer = run_container.file_uploader("Upload an image", type=["jpg", "jpeg"])
+input_image_buffer = run_container.file_uploader("Upload an image", accept_multiple_files=False, type=["jpg", "jpeg"], key=st.session_state.file_uploader_widget)
 threshold_selector = run_container.slider('Threshold' , min_value=3 , max_value=254 , value=6 , step=1)
 connectivity_selector = run_container.slider('Connectivity' , min_value=4 , max_value=8 , value=4 , step=4)
 
-quant_csv_expander = main_container.expander(label='Quant CSV')
-col1, col2, col3 = main_container.columns(3)
-
-def process(input_image, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
-    # predict.process(input_image, run_directory, weight_name, stride, crop_size, thresh, connectivity)
-    predicted_image_name = run_dir  + input_image_name.replace('_original_', '_prediction_')
-    threshold_image_name = run_dir  + input_image_name.replace('_original_', '_threshold_')
-    input_image.save(predicted_image_name)
-    input_image.save(threshold_image_name)
-    # print(predicted_image_name)
-
-
-# with st.sidebar.form(key='run_form'):
 if input_image_buffer is not None:
     input_image = Image.open(input_image_buffer)
     st.session_state.runs = set()
-    main_container.empty()
     col1.header("Input Image")
     col1.image(input_image, use_column_width=True)
     w, h = input_image.size
@@ -99,12 +95,15 @@ if input_image_buffer is not None:
         original_image_name = input_image_buffer.name
         run_id = run_id()
         params = params()
+        st.session_state.file_uploader_widget = str(randint(1000, 100000000))
+        print(st.session_state.file_uploader_widget)
         input_image_name = run_id + '_original_' + params + original_image_name
         input_image.save(run_dir  + input_image_name)
         refresh_runs_dir()
         process(input_image, input_image_name)
 
-option = col11.selectbox('Select Run',  options = list(st.session_state.runs))
+# Previous Runs Selection111
+option = previous_run_container.selectbox('Select Run',  options = st.session_state.runs)
 if option is not None:
     run_dir = dirname + "/runs/"
     input_image_filename = os.path.join(run_dir, option)
@@ -116,7 +115,7 @@ if option is not None:
 
     if os.path.isfile(input_image_filename):
         input_image = Image.open(input_image_filename)
-        col1.header("Input Image")
+        col1.header("Run Input Image")
         col1.image(input_image, use_column_width=True)
 
     if os.path.isfile(pred_image_filename):
