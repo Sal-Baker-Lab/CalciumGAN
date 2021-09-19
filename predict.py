@@ -76,6 +76,18 @@ def threshold(img,thresh):
     binary_map[binary_map==1] = 255
     return binary_map
 
+def overlay(img,mask,alpha=0.7):
+
+    overlay = np.zeros((mask.shape[0],mask.shape[1],3))
+    overlay[mask==255] = 255
+    overlay[:,:,1] = 0
+    overlay[:,:,2] = 0
+    overlay = overlay.astype(np.uint8)
+    overlay_bgr = cv2.cvtColor(overlay, cv2.COLOR_RGB2BGR)
+    dst = cv2.addWeighted(img, alpha, overlay_bgr, 1-alpha, 0)
+    dst = cv2.cvtColor(dst, cv2.COLOR_BGR2RGB)
+    return dst
+
 def connected_component(img,connectivity=8):
 
     binary_map = (img > 127).astype(np.uint8)
@@ -123,7 +135,7 @@ def load_global_model(weight_name, opt):
 # progress bar
 
 
-def process(input_image, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
+def process(input_image, run_dir, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8, alpha=0.7):
 
     # await asyncio.sleep(5)
     K.clear_session()
@@ -157,11 +169,22 @@ def process(input_image, original_image_name, weight_name='000090', stride=16, c
     threshold_image_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_threshold_'))
     thresh_im.save(threshold_image_path)
 
+    out_img_thresh = out_img_sv.copy()
+    thresh_img = threshold(out_img_thresh, thresh)
+    thresh_im = Image.fromarray(thresh_img)
+    threshold_image_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_threshold_'))
+    thresh_im.save(threshold_image_path)
+
     cc_img = thresh_img.copy()
     df = connected_component(cc_img,connectivity)
     quant_csv_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_quant_'))
     quant_csv_path = quant_csv_path.replace('jpg', 'csv')
     df.to_csv(quant_csv_path)
+
+    ovleray_img = overlay(out_img_sv.copy(), thresh_img.copy(), alpha)
+    ovleray_im = Image.fromarray(ovleray_img)
+    overlay_image_path =  os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_overlay_'))
+    ovleray_im.save(overlay_image_path)
 
 if __name__ == "__main__":
     process(None, '2021-09-06 05:09:40.722')

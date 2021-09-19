@@ -45,10 +45,10 @@ def refresh_runs_dir():
     dir = tuple(map(lambda  x:  os.path.basename(x), runs))
     st.session_state.runs = dir
 
-def process(input_image, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
+def process(input_image, run_dir, original_image_name, weight_name='000090', stride=16, crop_size=64, thresh=50, connectivity=8):
     # predict.process(input_image, run_directory, weight_name, stride, crop_size, thresh, connectivity)
-    predicted_image_name = run_dir  + input_image_name.replace('_original_', '_prediction_')
-    threshold_image_name = run_dir  + input_image_name.replace('_original_', '_threshold_')
+    predicted_image_name = run_dir  + original_image_name.replace('_original_', '_prediction_')
+    threshold_image_name = run_dir  + original_image_name.replace('_original_', '_threshold_')
     input_image.save(predicted_image_name)
     input_image.save(threshold_image_name)
     # print(predicted_image_name)
@@ -100,7 +100,7 @@ if input_image_buffer is not None:
         input_image_name = run_id + '_original_' + params + original_image_name
         input_image.save(run_dir  + input_image_name)
         refresh_runs_dir()
-        process(input_image, input_image_name)
+        process(input_image, run_dir, input_image_name)
 
 # Previous Runs Selection111
 option = previous_run_container.selectbox('Select Run',  options = st.session_state.runs)
