@@ -92,17 +92,18 @@ def overlay(img, mask, alpha=0.7):
     overlay[:, :, 1] = 0
     overlay[:, :, 2] = 0
     image = np.zeros((img.shape[0], img.shape[1], 3))
-    image[:,:,0] = img
-    image[:,:,1] = img
-    image[:,:,2] = img
+    image[:, :, 0] = img
+    image[:, :, 1] = img
+    image[:, :, 2] = img
     overlay = overlay.astype(np.uint8)
     image = image.astype(np.uint8)
-    print(image.shape,overlay.shape)
-    print(type(image),type(overlay))
+    print(image.shape, overlay.shape)
+    print(type(image), type(overlay))
     overlay_bgr = cv2.cvtColor(overlay, cv2.COLOR_RGB2BGR)
     dst = cv2.addWeighted(image, alpha, overlay_bgr, 1 - alpha, 0)
     dst = cv2.cvtColor(dst, cv2.COLOR_BGR2RGB)
     return dst
+
 
 def connected_component(img, connectivity=8):
     binary_map = (img > 127).astype(np.uint8)
@@ -189,20 +190,20 @@ def process(input_image, original_image_name, weight_name='000090', stride=16,
     df.to_csv(quant_csv_path)
 
     calibrated_quant_csv_path = os.path.join(dirname,
-                                  'runs/' + original_image_name.replace(
-                                      '_original_', '_calibrated_quant_'))
+                                             'runs/' + original_image_name.replace(
+                                                 '_original_',
+                                                 '_calibrated_quant_'))
+    print(calibrated_quant_csv_path)
     df["height"] = height_calibration * df["height"]
     df["width"] = width_calibration * df["width"]
     df.to_csv(calibrated_quant_csv_path)
 
-
-
-# ovleray_img = overlay(out_img_sv.copy(), thresh_img.copy(), alpha)
-#     ovleray_im = Image.fromarray(ovleray_img)
-#     overlay_image_path = os.path.join(dirname,
-#                                       'runs/' + original_image_name.replace(
-#                                           '_original_', '_overlay_'))
-#     ovleray_im.save(overlay_image_path)
+    ovleray_img = overlay(out_img_sv.copy(), thresh_img.copy(), alpha)
+    ovleray_im = Image.fromarray(ovleray_img)
+    overlay_image_path = os.path.join(dirname,
+                                      'runs/' + original_image_name.replace(
+                                          '_original_', '_overlay_'))
+    ovleray_im.save(overlay_image_path)
 
 
 if __name__ == "__main__":
