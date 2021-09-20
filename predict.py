@@ -135,18 +135,6 @@ def load_global_model(weight_name, opt):
     return g_global_model
 
 
-# max (stride)  = width - crop size
-
-# crop_size = 64  (trained on)
-# threshold 1 and 254 (default 32)
-# stride start 3, max = width - crop_szie
-# connectivity 4, and 8
-
-# view xls v download
-
-# progress bar
-
-
 def process(input_image, original_image_name, weight_name='000090', stride=16,
     crop_size=64, thresh=50, connectivity=8, alpha=0.7, height_calibration=1,
     width_calibration=1):
@@ -194,12 +182,21 @@ def process(input_image, original_image_name, weight_name='000090', stride=16,
     quant_csv_path = quant_csv_path.replace('jpg', 'csv')
     df.to_csv(quant_csv_path)
 
-    ovleray_img = overlay(out_img_sv.copy(), thresh_img.copy(), alpha)
-    ovleray_im = Image.fromarray(ovleray_img)
-    overlay_image_path = os.path.join(dirname,
-                                      'runs/' + original_image_name.replace(
-                                          '_original_', '_overlay_'))
-    ovleray_im.save(overlay_image_path)
+    calibrated_quant_csv_path = os.path.join(dirname,
+                                  'runs/' + original_image_name.replace(
+                                      '_original_', '_calibrated_quant_'))
+    df["height"] = height_calibration * df["height"]
+    df["width"] = width_calibration * df["width"]
+    df.to_csv(calibrated_quant_csv_path)
+
+
+
+# ovleray_img = overlay(out_img_sv.copy(), thresh_img.copy(), alpha)
+#     ovleray_im = Image.fromarray(ovleray_img)
+#     overlay_image_path = os.path.join(dirname,
+#                                       'runs/' + original_image_name.replace(
+#                                           '_original_', '_overlay_'))
+#     ovleray_im.save(overlay_image_path)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,110 @@
+Index: infer.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>'''\nCalciumGAN/infer.py Copyright (C) 2021 Sharif Amit Kamran\n\nThis program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along\nwith this program; if not, write to the Free Software Foundation, Inc.,\n51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.\n\n\n'''\n\n\n\n\n\n\nimport numpy as np\nfrom model import fine_generator, coarse_generator\n#from libtiff import TIFF\nimport pandas as pd\nimport os\nimport matplotlib.pyplot as plt\nfrom PIL import Image,ImageFilter\nimport random\nimport cv2\nfrom functools import partial\nimport numpy as np\nimport tensorflow as tf\nimport keras\nimport argparse\nfrom keras.optimizers import Adam\nfrom keras.models import Model\nfrom keras.models import Model,load_model\nimport keras.backend as K\nfrom keras.initializers import RandomNormal\nfrom numpy import load\nfrom sklearn.metrics import confusion_matrix,jaccard_similarity_score,f1_score,roc_auc_score,auc,recall_score, auc,roc_curve\nimport gc\nimport glob\nimport pycm\nimport warnings\nwarnings.filterwarnings('ignore')\n\n\n\ndef normalize_pred(img,g_global_model,g_local_model):\n    img = np.reshape(img,[1,64,64,1])\n    img_coarse = tf.image.resize(img, (32,32), method=tf.image.ResizeMethod.LANCZOS3)\n    img_coarse = (img_coarse - 127.5) / 127.5\n    img_coarse = np.array(img_coarse)\n\n    X_fakeB_coarse,x_global = g_global_model.predict(img_coarse)\n    X_fakeB_coarse = (X_fakeB_coarse+1)/2.0\n    pred_img_coarse = X_fakeB_coarse[:,:,:,0]\n\n\n    img = (img - 127.5) / 127.5\n    X_fakeB = g_local_model.predict([img,x_global])\n    X_fakeB = (X_fakeB+1)/2.0\n    pred_img = X_fakeB[:,:,:,0]\n    return [np.asarray(pred_img,dtype=np.float32),np.asarray(pred_img_coarse,dtype=np.float32)]\n\ndef strided_crop(img, img_h,img_w,height, width,g_global_model,g_local_model,stride=1):\n\n    full_prob = np.zeros((img_h, img_w),dtype=np.float32)\n    full_sum = np.ones((img_h, img_w),dtype=np.float32)\n\n    max_x = int(((img.shape[0]-height)/stride)+1)\n    max_y = int(((img.shape[1]-width)/stride)+1)\n    max_crops = (max_x)*(max_y)\n    i = 0\n    for h in range(max_x):\n        for w in range(max_y):\n                crop_img_arr = img[h * stride:(h * stride) + height,w * stride:(w * stride) + width]\n                [pred,pred_256] = normalize_pred(crop_img_arr,g_global_model,g_local_model)\n                full_prob[h * stride:(h * stride) + height,w * stride:(w * stride) + width] += pred[0]\n                full_sum[h * stride:(h * stride) + height,w * stride:(w * stride) + width] += 1\n                i = i + 1\n                #print(i)\n    out_img = full_prob / full_sum\n    return out_img\n\ndef threshold(img,thresh):\n\n    binary_map = (img > thresh).astype(np.uint8)\n    binary_map[binary_map==1] = 255\n    return binary_map\n\ndef connected_component(img,connectivity=8):\n\n    binary_map = (img > 127).astype(np.uint8)\n    output = cv2.connectedComponentsWithStats(binary_map, connectivity, cv2.CV_32S)\n    stats = output[2]\n    df = pd.DataFrame(stats[1:])\n    df.columns = ['Left','Top','Width','Height','Area']\n    return df\n\nif __name__ == \"__main__\":\n\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--in_dir', type=str, default='test', help='path/to/save/dir')\n    parser.add_argument('--weight_name', type=str, default='test', help='.h5 file name')\n    parser.add_argument('--stride', type=int, default=3)\n    parser.add_argument('--crop_size', type=int, default=64)\n    parser.add_argument('--threshold', type=int, default=50)\n    parser.add_argument('--connectivity',type=int,default=8,choices=[4,8], help='connected component connectivity, either 4 or 8')\n    args = parser.parse_args()\n\n\n    K.clear_session()\n    gc.collect()\n\n    stride = args.stride # Change Stride size to 8 or 16 for faster inference prediction\n    crop_size_h = args.crop_size\n    crop_size_w = args.crop_size\n    weight_name = args.weight_name\n    thresh = args.threshold\n    connectivity = args.connectivity\n    in_dir = args.in_dir\n    directories = [in_dir+'/pred',in_dir+'/thresh',in_dir+'/quant_csv']\n\n    for d in directories:\n        if not os.path.exists(d):\n            os.makedirs(d)\n\n    f = glob.glob(in_dir+\"/JPEGImages/*.jpg\")\n\n    img_shape = (64,64,1)\n    label_shape = (64,64,1)\n    x_global = (32,32,64)\n    opt = Adam()\n\n    g_local_model = fine_generator(x_global,img_shape)\n    g_local_model.load_weights('weight_file/local_model_'+weight_name+'.h5')\n    g_local_model.compile(loss='mse', optimizer=opt)\n\n    img_shape_g = (32,32,1)\n    g_global_model = coarse_generator(img_shape_g,n_downsampling=2, n_blocks=9, n_channels=1)\n    g_global_model.load_weights('weight_file/global_model_'+weight_name+'.h5')\n    g_global_model.compile(loss='mse',optimizer=opt)\n\n    for files in f:\n        fo = files.split('\\\\')\n        img = Image.open(files)\n        img_arr = np.asarray(img)\n        height, width, channel = img_arr.shape\n        filename_with_ext = fo[1].split('.')\n        filename = filename_with_ext[0]\n\n        img_name = in_dir+\"/JPEGImages/\"+filename+\".jpg\"\n        img = Image.open(img_name)\n        img_arr = np.asarray(img,dtype=np.float32)\n        img_arr = img_arr[:,:,0]\n        out_img = strided_crop(img_arr, img_arr.shape[0], img_arr.shape[1], crop_size_h, crop_size_w,g_global_model,g_local_model,stride)\n        out_img_sv = out_img.copy()\n        out_img_sv = ((out_img_sv) * 255.0).astype('uint8')\n\n        out_img_sv = out_img_sv.astype(np.uint8)\n        out_im = Image.fromarray(out_img_sv)\n        out_im_name = directories[0]+'/'+fo[1]\n        out_im.save(out_im_name)\n\n\n        out_img_thresh = out_img_sv.copy()\n        thresh_img = threshold(out_img_thresh,thresh)\n        thresh_im = Image.fromarray(thresh_img)\n        thresh_im_name =  directories[1]+'/'+fo[1]\n        img.save(thresh_im_name)\n\n        cc_img = thresh_img.copy()\n        df = connected_component(cc_img,connectivity)\n        df_csv_name =  directories[2]+'/'+fo[1]\n        df.to_csv(df_csv_name)\n\n\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- infer.py	(revision d1f2cd82beae676e409700357327c3f162e50e23)
++++ infer.py	(date 1630389533088)
+@@ -18,11 +18,6 @@
+ 
+ '''
+ 
+-
+-
+-
+-
+-
+ import numpy as np
+ from model import fine_generator, coarse_generator
+ #from libtiff import TIFF
+@@ -104,27 +99,11 @@
+     df.columns = ['Left','Top','Width','Height','Area']
+     return df
+ 
+-if __name__ == "__main__":
+-
+-    parser = argparse.ArgumentParser()
+-    parser.add_argument('--in_dir', type=str, default='test', help='path/to/save/dir')
+-    parser.add_argument('--weight_name', type=str, default='test', help='.h5 file name')
+-    parser.add_argument('--stride', type=int, default=3)
+-    parser.add_argument('--crop_size', type=int, default=64)
+-    parser.add_argument('--threshold', type=int, default=50)
+-    parser.add_argument('--connectivity',type=int,default=8,choices=[4,8], help='connected component connectivity, either 4 or 8')
+-    args = parser.parse_args()
+ 
+-
++def process(weight_name, stride, crop_size_h, crop_size_w, threshold):
+     K.clear_session()
+     gc.collect()
+ 
+-    stride = args.stride # Change Stride size to 8 or 16 for faster inference prediction
+-    crop_size_h = args.crop_size
+-    crop_size_w = args.crop_size
+-    weight_name = args.weight_name
+-    thresh = args.threshold
+-    connectivity = args.connectivity
+     in_dir = args.in_dir
+     directories = [in_dir+'/pred',in_dir+'/thresh',in_dir+'/quant_csv']
+ 
+@@ -160,7 +139,7 @@
+         img = Image.open(img_name)
+         img_arr = np.asarray(img,dtype=np.float32)
+         img_arr = img_arr[:,:,0]
+-        out_img = strided_crop(img_arr, img_arr.shape[0], img_arr.shape[1], crop_size_h, crop_size_w,g_global_model,g_local_model,stride)
++        out_img = strided_crop(img_arr, img_arr.shape[0], img_arr.shape[1], crop_size_h, crop_size_w, g_global_model,g_local_model,stride)
+         out_img_sv = out_img.copy()
+         out_img_sv = ((out_img_sv) * 255.0).astype('uint8')
+ 
+@@ -183,4 +162,32 @@
+ 
+ 
+ 
++weight_name = 'test'
++process(weight_name, stride, crop_size_h, crop_size_w, threshold)
++
++# if __name__ == "__main__":
++#
++#     parser = argparse.ArgumentParser()
++#     parser.add_argument('--in_dir', type=str, default='test', help='path/to/save/dir')
++#     parser.add_argument('--weight_name', type=str, default='test', help='.h5 file name')
++#     parser.add_argument('--stride', type=int, default=3)
++#     parser.add_argument('--crop_size', type=int, default=64)
++#     parser.add_argument('--threshold', type=int, default=50)
++#     parser.add_argument('--connectivity',type=int,default=8,choices=[4,8], help='connected component connectivity, either 4 or 8')
++#     args = parser.parse_args()
++#
++#     stride = args.stride # Change Stride size to 8 or 16 for faster inference prediction
++#     crop_size_h = args.crop_size
++#     crop_size_w = args.crop_size
++#     weight_name = args.weight_name
++#     thresh = args.threshold
++#     connectivity = args.connectivity
++#     process(weight_name, stride, crop_size_h, crop_size_w, threshold)
++
++
++
++
++
++
++
+ 
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Byte-compiled / optimized / DLL files\n__pycache__/\n*.py[cod]\n*$py.class\n\n# C extensions\n*.so\n\n# Distribution / packaging\n.Python\nbuild/\ndevelop-eggs/\ndist/\ndownloads/\neggs/\n.eggs/\nlib/\nlib64/\nparts/\nsdist/\nvar/\nwheels/\npip-wheel-metadata/\nshare/python-wheels/\n*.egg-info/\n.installed.cfg\n*.egg\nMANIFEST\n\n# PyInstaller\n#  Usually these files are written by a python script from a template\n#  before PyInstaller builds the exe, so as to inject date/other infos into it.\n*.manifest\n*.spec\n\n# Installer logs\npip-log.txt\npip-delete-this-directory.txt\n\n# Unit test / coverage reports\nhtmlcov/\n.tox/\n.nox/\n.coverage\n.coverage.*\n.cache\nnosetests.xml\ncoverage.xml\n*.cover\n*.py,cover\n.hypothesis/\n.pytest_cache/\n\n# Translations\n*.mo\n*.pot\n\n# Django stuff:\n*.log\nlocal_settings.py\ndb.sqlite3\ndb.sqlite3-journal\n\n# Flask stuff:\ninstance/\n.webassets-cache\n\n# Scrapy stuff:\n.scrapy\n\n# Sphinx documentation\ndocs/_build/\n\n# PyBuilder\ntarget/\n\n# Jupyter Notebook\n.ipynb_checkpoints\n\n# IPython\nprofile_default/\nipython_config.py\n\n# pyenv\n.python-version\n\n# pipenv\n#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.\n#   However, in case of collaboration, if having platform-specific dependencies or dependencies\n#   having no cross-platform support, pipenv may install dependencies that don't work, or not\n#   install all needed dependencies.\n#Pipfile.lock\n\n# PEP 582; used by e.g. github.com/David-OConnor/pyflow\n__pypackages__/\n\n# Celery stuff\ncelerybeat-schedule\ncelerybeat.pid\n\n# SageMath parsed files\n*.sage.py\n\n# Environments\n.env\n.venv\nenv/\nvenv/\nENV/\nenv.bak/\nvenv.bak/\n\n# Spyder project settings\n.spyderproject\n.spyproject\n\n# Rope project settings\n.ropeproject\n\n# mkdocs documentation\n/site\n\n# mypy\n.mypy_cache/\n.dmypy.json\ndmypy.json\n\n# Pyre type checker\n.pyre/\n\n# Weight files\n.hdf5\n.h5\n\n# Image files\n.png\n.jpg\n.tif\n\n# Directories\n\n\ntest/pred/*.png\ntest/JPEGImages/*.jpg\nweight_file/*.h5\nweight_file/*.h
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .gitignore	(revision d1f2cd82beae676e409700357327c3f162e50e23)
++++ .gitignore	(date 1630389237783)
+@@ -138,8 +138,6 @@
+ .tif
+ 
+ # Directories
+-
+-
+ test/pred/*.png
+ test/JPEGImages/*.jpg
+ weight_file/*.h5

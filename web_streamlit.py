@@ -152,6 +152,10 @@ if option is not None:
                                   option.replace('_original_', '_quant_'))
     quant_filename = quant_filename.replace('.jpg', '.csv')
 
+    calibrated_quant_filename = os.path.join(run_dir,
+                                  option.replace('_original_', '_calibrated_quant_'))
+    calibrated_quant_filename = quant_filename.replace('.jpg', '.csv')
+
     if os.path.isfile(input_image_filename):
         input_image = Image.open(input_image_filename)
         col1.header("Run Input Image")
@@ -170,6 +174,13 @@ if option is not None:
     with quant_csv_expander:
         if os.path.isfile(quant_filename):
             dataframe = pd.read_csv(quant_filename)
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+        else:
+            dataframe = None
+
+    with calibrated_quant_csv_expander:
+        if os.path.isfile(calibrated_quant_filename):
+            dataframe = pd.read_csv(calibrated_quant_filename)
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
             dataframe = None
