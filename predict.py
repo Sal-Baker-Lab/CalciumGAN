@@ -185,8 +185,10 @@ def process(input_image, original_image_name, weight_name='000090', stride=16,
     calibrated_quant_csv_path = os.path.join(dirname,
                                   'runs/' + original_image_name.replace(
                                       '_original_', '_calibrated_quant_'))
-    df["height"] = height_calibration * df["height"]
-    df["width"] = width_calibration * df["width"]
+   
+    calibrated_quant_csv_path = calibrated_quant_csv_path.replace('jpg', 'csv')
+    df["Height"] = height_calibration * df["Height"]
+    df["Width"] = width_calibration * df["Width"]
     df.to_csv(calibrated_quant_csv_path)
 
 
