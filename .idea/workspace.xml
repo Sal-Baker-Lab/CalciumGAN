@@ -19,10 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5be1a74-dd8c-48a5-b4a7-7e117d3220b8" name="Add Streamlit" comment="Adding calibration">
-      <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/predict.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_streamlit.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_streamlit.py" afterDir="false" />
-    </list>
+    <list default="true" id="f5be1a74-dd8c-48a5-b4a7-7e117d3220b8" name="Add Streamlit" comment="Adding calibration" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -161,6 +158,7 @@
       <workItem from="1631650790023" duration="9015000" />
       <workItem from="1632089879845" duration="8209000" />
       <workItem from="1632111262630" duration="20000" />
+      <workItem from="1632111417604" duration="366000" />
     </task>
     <task id="LOCAL-00001" summary="Add Streamlit and Poetry">
       <created>1628561234784</created>
@@ -543,11 +541,11 @@
       <screen x="0" y="25" width="2048" height="1146" />
     </state>
     <state x="787" y="305" key="#xdebugger.evaluate/0.25.2048.1146@0.25.2048.1146" timestamp="1631597833634" />
-    <state x="593" y="170" key="CommitChangelistDialog2" timestamp="1632111281290">
+    <state x="593" y="170" key="CommitChangelistDialog2" timestamp="1632111446098">
       <screen x="0" y="25" width="2048" height="1146" />
     </state>
     <state x="593" y="170" key="CommitChangelistDialog2/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904834074" />
-    <state x="593" y="170" key="CommitChangelistDialog2/0.25.2048.1146@0.25.2048.1146" timestamp="1632111281290" />
+    <state x="593" y="170" key="CommitChangelistDialog2/0.25.2048.1146@0.25.2048.1146" timestamp="1632111446098" />
     <state x="100" y="125" width="1848" height="946" key="DiffContextDialog" timestamp="1632108769515">
       <screen x="0" y="25" width="2048" height="1146" />
     </state>
