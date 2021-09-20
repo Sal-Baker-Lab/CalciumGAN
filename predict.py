@@ -189,31 +189,19 @@ def process(input_image, original_image_name, weight_name='000090', stride=16,
     quant_csv_path = quant_csv_path.replace('jpg', 'csv')
     df.to_csv(quant_csv_path)
 
-    calibrated_quant_csv_path = os.path.join(dirname,
-<<<<<<< HEAD
-                                  'runs/' + original_image_name.replace(
-                                      '_original_', '_calibrated_quant_'))
-   
+    calibrated_quant_csv_path = os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_calibrated_quant_'))
+
     calibrated_quant_csv_path = calibrated_quant_csv_path.replace('jpg', 'csv')
     df["Height"] = height_calibration * df["Height"]
     df["Width"] = width_calibration * df["Width"]
-=======
-                                             'runs/' + original_image_name.replace(
-                                                 '_original_',
-                                                 '_calibrated_quant_'))
+
     print(calibrated_quant_csv_path)
-    df["height"] = height_calibration * df["height"]
-    df["width"] = width_calibration * df["width"]
->>>>>>> f20ccc3ba55a5c767e1a74bae8fff4a3eb78e84b
     df.to_csv(calibrated_quant_csv_path)
 
     ovleray_img = overlay(out_img_sv.copy(), thresh_img.copy(), alpha)
     ovleray_im = Image.fromarray(ovleray_img)
-    overlay_image_path = os.path.join(dirname,
-                                      'runs/' + original_image_name.replace(
-                                          '_original_', '_overlay_'))
+    overlay_image_path = os.path.join(dirname,'runs/' + original_image_name.replace('_original_', '_overlay_'))
     ovleray_im.save(overlay_image_path)
-
 
 if __name__ == "__main__":
     process(None, '2021-09-06 05:09:40.722')
