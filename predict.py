@@ -194,11 +194,12 @@ def process(input_image, original_image_name, weight_name='000090', stride=16,
     calibrated_quant_csv_path = calibrated_quant_csv_path.replace('jpg', 'csv')
     df["Height"] = height_calibration * df["Height"]
     df["Width"] = width_calibration * df["Width"]
+    df["Area"] = height_calibration * width_calibration * df["Area"]
 
     print(calibrated_quant_csv_path)
     df.to_csv(calibrated_quant_csv_path)
 
-    ovleray_img = overlay(out_img_sv.copy(), thresh_img.copy(), alpha)
+    ovleray_img = overlay(img_arr.copy(), thresh_img.copy(), alpha)
     ovleray_im = Image.fromarray(ovleray_img)
     overlay_image_path = os.path.join(dirname,'runs/' + original_image_name.replace('_original_', '_overlay_'))
     ovleray_im.save(overlay_image_path)
