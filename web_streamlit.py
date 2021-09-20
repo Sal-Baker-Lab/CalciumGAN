@@ -159,7 +159,6 @@ if option is not None:
     calibrated_quant_filename = os.path.join(run_dir,
                                   option.replace('_original_', '_calibrated_quant_'))
     calibrated_quant_filename = calibrated_quant_filename.replace('.jpg', '.csv')
-    calibrated_quant_filename = quant_filename.replace('.jpg', '.csv')
     print(calibrated_quant_filename)
 
     if os.path.isfile(input_image_filename):

@@ -106,10 +106,10 @@ threshold_selector = run_container.slider('Threshold', min_value=3,
                                           max_value=254, value=6, step=1)
 connectivity_selector = run_container.slider('Connectivity', min_value=4,
                                              max_value=8, value=4, step=4)
-calibration_height = run_container.slider('Height Calibration px', min_value=1,
-                                          max_value=10, value=1, step=1)
-calibration_width = run_container.slider('Width Calibration px', min_value=1,
-                                         max_value=10, value=1, step=1)
+height_calibration_selector = run_container.slider('Height Calibration px', min_value=1,
+                                                   max_value=10, value=1, step=1)
+width_calibration_selector = run_container.slider('Width Calibration px', min_value=1,
+                                                  max_value=10, value=1, step=1)
 
 if input_image_buffer is not None:
     input_image = Image.open(input_image_buffer)
@@ -143,9 +143,18 @@ if option is not None:
                                                                '_prediction_'))
     thresh_image_filename = os.path.join(run_dir, option.replace('_original_',
                                                                  '_threshold_'))
+
+    overlay_image_filename = os.path.join(run_dir, option.replace('_original_',
+                                                                 '_overlay_'))
+
     quant_filename = os.path.join(run_dir,
                                   option.replace('_original_', '_quant_'))
     quant_filename = quant_filename.replace('.jpg', '.csv')
+
+    calibrated_quant_filename = os.path.join(run_dir,
+                                  option.replace('_original_', '_calibrated_quant_'))
+    calibrated_quant_filename = calibrated_quant_filename.replace('.jpg', '.csv')
+    print(calibrated_quant_filename)
 
     if os.path.isfile(input_image_filename):
         input_image = Image.open(input_image_filename)
@@ -162,9 +171,21 @@ if option is not None:
         col3.header("Threshold Image")
         col3.image(thresh_image, use_column_width=True)
 
+    if os.path.isfile(overlay_image_filename):
+        overlay_image = Image.open(overlay_image_filename)
+        col4.header("Overlay Image")
+        col4.image(overlay_image, use_column_width=True)
+
     with quant_csv_expander:
         if os.path.isfile(quant_filename):
             dataframe = pd.read_csv(quant_filename)
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+        else:
+            dataframe = None
+
+    with calibrated_quant_csv_expander:
+        if os.path.isfile(calibrated_quant_filename):
+            dataframe = pd.read_csv(calibrated_quant_filename)
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
             dataframe = None
