@@ -211,6 +211,9 @@ if option is not None:
             dataframe = interval(dataframe)
 
             plt.margins(x=0)
+            plt.yticks(fontsize=16)
+            sns.set(font_scale = 1.5)
+
 
             fig1, ax1 = plt.subplots(squeeze=True)
             sns.barplot(x='category', y='Frequency', data=dataframe,

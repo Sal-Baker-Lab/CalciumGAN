@@ -210,10 +210,14 @@ if option is not None:
             dataframe = interval(dataframe)
 
             plt.margins(x=0)
+            plt.yticks(fontsize=16)
+            sns.set(font_scale = 1.5)
+
 
             fig1, ax1 = plt.subplots(squeeze=True)
             sns.barplot(x='category', y='Frequency', data=dataframe,
                           dodge=True, palette='viridis', ax = ax1)
+
             sns.despine()
             ax1.set_xlabel('')
             ax1.set_ylabel('Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)',  fontsize = 18)
