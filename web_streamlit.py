@@ -37,9 +37,16 @@ quant_csv_expander = main_container.expander(
     label='Click to expand and view Quant result')
 calibrated_quant_csv_expander = main_container.expander(
     label='Click to expand and view Calibrated Quant result')
+plots_quant_csv_expander = main_container.expander(
+    label='Click to view plots')
+plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
 
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
 
+
+def interval(df):
+    df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
+    return df
 
 def genereate_widget_key():
     st.session_state.file_uploader_widget = str(randint(1000, 100000000))
@@ -106,9 +113,12 @@ threshold_selector = run_container.slider('Threshold', min_value=3,
                                           max_value=254, value=6, step=1)
 connectivity_selector = run_container.slider('Connectivity', min_value=4,
                                              max_value=8, value=4, step=4)
-height_calibration_selector = run_container.slider('Height Calibration px', min_value=1,
-                                                   max_value=10, value=1, step=1)
-width_calibration_selector = run_container.slider('Width Calibration px', min_value=1,
+height_calibration_selector = run_container.slider('Height Calibration px',
+                                                   min_value=1,
+                                                   max_value=10, value=1,
+                                                   step=1)
+width_calibration_selector = run_container.slider('Width Calibration px',
+                                                  min_value=1,
                                                   max_value=10, value=1, step=1)
 
 if input_image_buffer is not None:
@@ -192,5 +202,55 @@ if option is not None:
         if os.path.isfile(calibrated_quant_filename):
             dataframe = pd.read_csv(calibrated_quant_filename)
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+        else:
+            dataframe = None
+    with plots_quant_csv_expander:
+        if os.path.isfile(calibrated_quant_filename):
+            dataframe = pd.read_csv(calibrated_quant_filename)
+            dataframe = dataframe.assign(category='')
+            dataframe = interval(dataframe)
+
+            plt.margins(x=0)
+
+            fig1, ax1 = plt.subplots(squeeze=True)
+            sns.barplot(x='category', y='Frequency', data=dataframe,
+                          dodge=True, palette='viridis', ax = ax1)
+            sns.despine()
+            ax1.set_xlabel('')
+            ax1.set_ylabel('Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)',  fontsize = 18)
+            plot_col1.pyplot(fig1)
+
+            fig2, ax2 = plt.subplots(squeeze=True)
+            sns.swarmplot(x='category', y='Area', data=dataframe,
+                          dodge=True, palette='viridis', ax = ax2)
+            sns.despine()
+            ax2.set_xlabel('')
+            ax2.set_ylabel(r'Area ($\mu$m*s)',  fontsize = 20)
+            plot_col2.pyplot(fig2)
+        #
+
+            fig3, ax3 = plt.subplots(squeeze=True)
+
+            sns.swarmplot(x='category', y='Height', data=dataframe,
+                               dodge=True, palette='viridis', ax = ax3)
+            sns.despine()
+            ax3.set_xlabel('')
+            ax3.set_ylabel(r'Duration - Time ($\mu$s)', fontsize = 20)
+            plot_col3.pyplot(fig3)
+
+
+
+            fig4, ax4 = plt.subplots(squeeze=True)
+            sns.swarmplot(x='category', y='Interval', data=dataframe,
+                          dodge=True, palette='viridis', ax = ax4)
+            sns.despine()
+
+            ax4.set_xlabel('')
+            ax4.set_ylabel('Spatial spread - Distance \n' + r'$(mu*s)$', fontsize = 20)
+            ax4.set_xmargin(0)
+            ax4.margins(x=0, tight=None)
+
+            plot_col4.pyplot(fig4)
+
         else:
             dataframe = None
