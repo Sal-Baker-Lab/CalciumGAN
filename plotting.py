@@ -15,15 +15,15 @@ df = pd.read_csv(base_dir+input_file_name)
 
 
 df = df.assign(category='')
-fig, ax = plt.subplots() #solved by add this line
-ax = sns.swarmplot(x='category', y='Height', data=df, dodge=True, palette='viridis')
-
-# plt.title("Area")
+fig, axs = plt.subplots(1, 2, sharey=True)
+ax = axs.flat[0]
+sns.swarmplot(x='category', y='Height', data=df, dodge=True, palette='viridis', ax=ax)
+ax.set_xlabel('')
+ax.set_ylabel(r'Time ($\mu$s)')
+plt.title("Duration")
 # plt.show()
 
-st.title("Eco")
 st.pyplot(fig)
-
 
 
 

@@ -209,20 +209,47 @@ if option is not None:
             dataframe = dataframe.assign(category='')
             dataframe = interval(dataframe)
 
-            fig, ax = plt.subplots()
-            ax = sns.swarmplot(x='category', y='Height', data=dataframe,
-                               dodge=True, palette='viridis')
-            plot_col1.pyplot(fig)
+            plt.margins(x=0)
 
-            fig, ax = plt.subplots()
-            ax = sns.swarmplot(x='category', y='Width', data=dataframe,
-                               dodge=True, palette='viridis')
-            plot_col2.pyplot(fig)
+            fig1, ax1 = plt.subplots(squeeze=True)
+            sns.barplot(x='category', y='Frequency', data=dataframe,
+                          dodge=True, palette='viridis', ax = ax1)
+            sns.despine()
+            ax1.set_xlabel('')
+            ax1.set_ylabel('Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)',  fontsize = 18)
+            plot_col1.pyplot(fig1)
 
-            fig, ax = plt.subplots()
-            ax = sns.swarmplot(x='category', y='Interval', data=dataframe,
-                               dodge=True, palette='viridis')
-            plot_col3.pyplot(fig)
+            fig2, ax2 = plt.subplots(squeeze=True)
+            sns.swarmplot(x='category', y='Area', data=dataframe,
+                          dodge=True, palette='viridis', ax = ax2)
+            sns.despine()
+            ax2.set_xlabel('')
+            ax2.set_ylabel(r'Area ($\mu$m*s)',  fontsize = 20)
+            plot_col2.pyplot(fig2)
+        #
+
+            fig3, ax3 = plt.subplots(squeeze=True)
+
+            sns.swarmplot(x='category', y='Height', data=dataframe,
+                               dodge=True, palette='viridis', ax = ax3)
+            sns.despine()
+            ax3.set_xlabel('')
+            ax3.set_ylabel(r'Duration - Time ($\mu$s)', fontsize = 20)
+            plot_col3.pyplot(fig3)
+
+
+
+            fig4, ax4 = plt.subplots(squeeze=True)
+            sns.swarmplot(x='category', y='Interval', data=dataframe,
+                          dodge=True, palette='viridis', ax = ax4)
+            sns.despine()
+
+            ax4.set_xlabel('')
+            ax4.set_ylabel('Spatial spread - Distance \n' + r'$(mu*s)$', fontsize = 20)
+            ax4.set_xmargin(0)
+            ax4.margins(x=0, tight=None)
+
+            plot_col4.pyplot(fig4)
 
         else:
             dataframe = None
