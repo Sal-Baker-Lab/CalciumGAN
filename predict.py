@@ -111,7 +111,7 @@ def connected_component(img, connectivity=8):
                                               cv2.CV_32S)
     stats = output[2]
     df = pd.DataFrame(stats[1:])
-    df.columns = ['Left', 'Top', 'Width', 'Height', 'Area']
+    df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
     return df
 
 

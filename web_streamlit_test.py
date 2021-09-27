@@ -9,6 +9,8 @@ import random
 import base64
 import shutil
 from random import randint
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Streamlit Page Configuration
 dirname = os.path.dirname(__file__)
@@ -32,9 +34,16 @@ quant_csv_expander = main_container.expander(
     label='Click to expand and view Quant result')
 calibrated_quant_csv_expander = main_container.expander(
     label='Click to expand and view Calibrated Quant result')
+plots_quant_csv_expander = main_container.expander(
+    label='Click to view plots')
+plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
 
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
 
+
+def interval(df):
+    df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
+    return df
 
 def genereate_widget_key():
     st.session_state.file_uploader_widget = str(randint(1000, 100000000))
@@ -61,10 +70,10 @@ def refresh_runs_dir():
     st.session_state.runs = dir
 
 
-def process(input_image, run_dir, original_image_name, weight_name='000090',
-    stride=16, crop_size=64, thresh=50, connectivity=8, height_calibration=1,
+def process(input_image, original_image_name, weight_name='000090',
+    stride=16, crop_size=64, thresh=50, connectivity=8, alpha=0.7,
+    height_calibration=1,
     width_calibration=1):
-
     # predict.process(input_image, run_directory, weight_name, stride, crop_size, thresh, connectivity)
     predicted_image_name = run_dir + original_image_name.replace('_original_',
                                                                  '_prediction_')
@@ -106,9 +115,12 @@ threshold_selector = run_container.slider('Threshold', min_value=3,
                                           max_value=254, value=6, step=1)
 connectivity_selector = run_container.slider('Connectivity', min_value=4,
                                              max_value=8, value=4, step=4)
-height_calibration_selector = run_container.slider('Height Calibration px', min_value=1,
-                                                   max_value=10, value=1, step=1)
-width_calibration_selector = run_container.slider('Width Calibration px', min_value=1,
+height_calibration_selector = run_container.slider('Height Calibration px',
+                                                   min_value=1,
+                                                   max_value=10, value=1,
+                                                   step=1)
+width_calibration_selector = run_container.slider('Width Calibration px',
+                                                  min_value=1,
                                                   max_value=10, value=1, step=1)
 
 if input_image_buffer is not None:
@@ -131,7 +143,7 @@ if input_image_buffer is not None:
         input_image_name = run_id + '_original_' + params + original_image_name
         input_image.save(run_dir + input_image_name)
         refresh_runs_dir()
-        process(input_image, run_dir, input_image_name)
+        process(input_image, original_image_name=input_image_name)
 
 # Previous Runs Selection111
 option = previous_run_container.selectbox('Select Run',
@@ -145,15 +157,17 @@ if option is not None:
                                                                  '_threshold_'))
 
     overlay_image_filename = os.path.join(run_dir, option.replace('_original_',
-                                                                 '_overlay_'))
+                                                                  '_overlay_'))
 
     quant_filename = os.path.join(run_dir,
                                   option.replace('_original_', '_quant_'))
     quant_filename = quant_filename.replace('.jpg', '.csv')
 
     calibrated_quant_filename = os.path.join(run_dir,
-                                  option.replace('_original_', '_calibrated_quant_'))
-    calibrated_quant_filename = calibrated_quant_filename.replace('.jpg', '.csv')
+                                             option.replace('_original_',
+                                                            '_calibrated_quant_'))
+    calibrated_quant_filename = calibrated_quant_filename.replace('.jpg',
+                                                                  '.csv')
     print(calibrated_quant_filename)
 
     if os.path.isfile(input_image_filename):
@@ -189,3 +203,29 @@ if option is not None:
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
             dataframe = None
+    with plots_quant_csv_expander:
+        if os.path.isfile(calibrated_quant_filename):
+            dataframe = pd.read_csv(calibrated_quant_filename)
+            dataframe = dataframe.assign(category='')
+            dataframe = interval(dataframe)
+
+            fig, ax = plt.subplots()
+            ax = sns.swarmplot(x='category', y='Height', data=dataframe,
+                               dodge=True, palette='viridis')
+            plot_col1.pyplot(fig)
+
+            fig, ax = plt.subplots()
+            ax = sns.swarmplot(x='category', y='Width', data=dataframe,
+                               dodge=True, palette='viridis')
+            plot_col2.pyplot(fig)
+
+            fig, ax = plt.subplots()
+            ax = sns.swarmplot(x='category', y='Interval', data=dataframe,
+                               dodge=True, palette='viridis')
+            plot_col3.pyplot(fig)
+
+        else:
+            dataframe = None
+
+
+
