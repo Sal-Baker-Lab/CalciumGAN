@@ -111,7 +111,8 @@ def connected_component(img, connectivity=8):
                                               cv2.CV_32S)
     stats = output[2]
     df = pd.DataFrame(stats[1:])
-    df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
+    df.columns = ['Left', 'Top', 'Width', 'Height', 'Area']
+    df.insert(0, 'Frequency', df.index)
     return df
 
 
@@ -187,7 +188,7 @@ def process(input_image, original_image_name, weight_name='000090', stride=16,
                                   'runs/' + original_image_name.replace(
                                       '_original_', '_quant_'))
     quant_csv_path = quant_csv_path.replace('jpg', 'csv')
-    df.to_csv(quant_csv_path)
+    df.to_csv(quant_csv_path, index=False)
 
     calibrated_quant_csv_path = os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_calibrated_quant_'))
 
@@ -197,7 +198,7 @@ def process(input_image, original_image_name, weight_name='000090', stride=16,
     df["Area"] = height_calibration * width_calibration * df["Area"]
 
     print(calibrated_quant_csv_path)
-    df.to_csv(calibrated_quant_csv_path)
+    df.to_csv(calibrated_quant_csv_path, index=False)
 
     ovleray_img = overlay(img_arr.copy(), thresh_img.copy(), alpha)
     ovleray_im = Image.fromarray(ovleray_img)

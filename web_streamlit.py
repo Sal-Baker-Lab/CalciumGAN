@@ -12,6 +12,9 @@ import random
 from random import randint
 import base64
 import shutil
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 tb._SYMBOLIC_SCOPE.value = True
 
@@ -194,14 +197,14 @@ if option is not None:
     with quant_csv_expander:
         if os.path.isfile(quant_filename):
             dataframe = pd.read_csv(quant_filename)
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key='quantgrid')
         else:
             dataframe = None
 
     with calibrated_quant_csv_expander:
         if os.path.isfile(calibrated_quant_filename):
             dataframe = pd.read_csv(calibrated_quant_filename)
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key='calibrated')
         else:
             dataframe = None
     with plots_quant_csv_expander:
