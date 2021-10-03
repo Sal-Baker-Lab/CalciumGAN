@@ -41,6 +41,12 @@ plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
 
 
+def resize_displayed_image(image, fixed_height=500):
+    height_percent = (fixed_height / float(image.size[1]))
+    width_size = int((float(image.size[0]) * float(height_percent)))
+    image1 = image.resize((width_size, fixed_height), Image.NEAREST)
+    return image1
+
 def interval(df):
     df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
     return df
@@ -126,7 +132,7 @@ width_calibration_selector = run_container.slider('Width Calibration px',
 if input_image_buffer is not None:
     input_image = Image.open(input_image_buffer)
     st.session_state.runs = set()
-    col1.header("Input Image")
+    col1.header("Selected Image")
     col1.image(input_image, use_column_width=True)
     w, h = input_image.size
     stride_selector = run_container.slider('Stride', min_value=0,
@@ -172,23 +178,23 @@ if option is not None:
 
     if os.path.isfile(input_image_filename):
         input_image = Image.open(input_image_filename)
-        col1.header("Run Input Image")
-        col1.image(input_image, use_column_width=True)
+        col1.header("Input Image")
+        col1.image(resize_displayed_image(input_image), use_column_width=False)
 
     if os.path.isfile(pred_image_filename):
         predicted_image = Image.open(pred_image_filename)
         col2.header("Predicted Image")
-        col2.image(predicted_image, use_column_width=True)
+        col2.image(resize_displayed_image(predicted_image), use_column_width=False)
 
     if os.path.isfile(thresh_image_filename):
         thresh_image = Image.open(thresh_image_filename)
         col3.header("Threshold Image")
-        col3.image(thresh_image, use_column_width=True)
+        col3.image(resize_displayed_image(thresh_image), use_column_width=False)
 
     if os.path.isfile(overlay_image_filename):
         overlay_image = Image.open(overlay_image_filename)
         col4.header("Overlay Image")
-        col4.image(overlay_image, use_column_width=True)
+        col4.image(resize_displayed_image(overlay_image), use_column_width=False)
 
     with quant_csv_expander:
         if os.path.isfile(quant_filename):
@@ -221,7 +227,7 @@ if option is not None:
 
             # sns.despine(top=True, right=True, left=False, bottom=False)
             ax1.set_xlabel('')
-            ax1.set_ylabel('Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)',  fontsize = 18)
+            # ax1.set_ylabel('Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)',  fontsize = 18)
             ax1.set_facecolor('xkcd:white')
 
             plot_col1.pyplot(fig1)
