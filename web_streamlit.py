@@ -47,6 +47,29 @@ plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
 
 
+def display_plot(col, plot_type):
+    with plots_quant_csv_expander:
+        plot_path = run_dir + "/" + option + plot_type
+        if os.path.isfile(plot_path):
+            plot_image = Image.open(plot_path)
+            col.image(plot_image, use_column_width=True)
+
+
+def display_predictions(col, original_image_path, label, image_type):
+    image_path = original_image_path.replace("_original_", image_type)
+    if os.path.isfile(image_path):
+        image = Image.open(image_path)
+        col.header(label)
+        col.image(resize_displayed_image(image), use_column_width=False)
+
+
+def resize_displayed_image(image, fixed_height=500):
+    height_percent = (fixed_height / float(image.size[1]))
+    width_size = int((float(image.size[0]) * float(height_percent)))
+    image1 = image.resize((width_size, fixed_height), Image.NEAREST)
+    return image1
+
+
 def interval(df):
     df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
     return df
@@ -76,11 +99,15 @@ def refresh_runs_dir():
     st.session_state.runs = dir
 
 
-def process(input_image, original_image_name, weight_name='000090',
+def process(run_dir, weight_name='000090',
     stride=16, crop_size=64, thresh=50, connectivity=8, alpha=0.7,
     height_calibration=1,
     width_calibration=1):
-    predict.process(input_image, original_image_name, weight_name, stride,
+
+    input_images = list(
+        filter(os.path.isfile, glob.glob(run_dir + f"/*_original_*")))
+
+    predict.process(input_images, weight_name, stride,
                     crop_size, thresh, connectivity, alpha, height_calibration,
                     width_calibration)
 
@@ -109,7 +136,7 @@ if download_runs:
 # Run Container
 
 input_image_buffer = run_container.file_uploader("Upload an image",
-                                                 accept_multiple_files=False,
+                                                 accept_multiple_files=True,
                                                  type=["jpg", "jpeg"],
                                                  key=st.session_state.file_uploader_widget)
 threshold_selector = run_container.slider('Threshold', min_value=3,
@@ -124,139 +151,72 @@ width_calibration_selector = run_container.slider('Width Calibration px',
                                                   min_value=1,
                                                   max_value=10, value=1, step=1)
 
-if input_image_buffer is not None:
-    input_image = Image.open(input_image_buffer)
+if input_image_buffer is not None and len(input_image_buffer) > 0:
+    first_input_image = Image.open(input_image_buffer[0])
     st.session_state.runs = set()
-    col1.header("Input Image")
-    col1.image(input_image, use_column_width=True)
-    w, h = input_image.size
+    # col1.header("Selected Image")
+    # col1.image(input_image, use_column_width=True)
+    w, h = first_input_image.size
     stride_selector = run_container.slider('Stride', min_value=0,
                                            max_value=w - 64, value=3, step=1)
     submit_button = run_container.button(label='Run Prediction')
 
     if submit_button:
         run_dir = dirname + "/runs/"
-        original_image_name = input_image_buffer.name
+        # original_image_name = input_image_buffer.name
+
+        # generate run_id
         run_id = run_id()
         params = params()
         st.session_state.file_uploader_widget = str(randint(1000, 100000000))
-        print(st.session_state.file_uploader_widget)
-        input_image_name = run_id + '_original_' + params + original_image_name
-        input_image.save(run_dir + input_image_name)
-        refresh_runs_dir()
 
-        process(input_image=input_image, original_image_name=input_image_name,
-                stride=stride_selector, thresh=threshold_selector,
-                connectivity=connectivity_selector,
-                height_calibration=height_calibration_selector,
-                width_calibration=width_calibration_selector)
+        # rename save input images
+        os.mkdir(run_dir + run_id)
+        for image_path in input_image_buffer:
+            new_image_name = run_id + '_original_' + params + image_path.name
+            image = Image.open(image_path)
+            image.save(run_dir + run_id + "/" + new_image_name)
+
+        refresh_runs_dir()
+        process(run_dir + run_id + "/")
 
 # Previous Runs Selection111
 option = previous_run_container.selectbox('Select Run',
                                           options=st.session_state.runs)
 if option is not None:
-    run_dir = dirname + "/runs/"
-    input_image_filename = os.path.join(run_dir, option)
-    pred_image_filename = os.path.join(run_dir, option.replace('_original_',
-                                                               '_prediction_'))
-    thresh_image_filename = os.path.join(run_dir, option.replace('_original_',
-                                                                 '_threshold_'))
+    run_dir = dirname + "/runs/" + option
+    input_images = list(
+        filter(os.path.isfile, glob.glob(run_dir + f"/*_original_*")))
 
-    overlay_image_filename = os.path.join(run_dir, option.replace('_original_',
-                                                                 '_overlay_'))
+    for input_image in input_images:
+        display_predictions(col1, input_image, 'Input Image', "_original_")
+        display_predictions(col2, input_image, 'Predicted Image',
+                            "_prediction_")
+        display_predictions(col3, input_image, 'Threshold Image', "_threshold_")
+        display_predictions(col4, input_image, 'Overlay Image', "_overlay_")
 
-    quant_filename = os.path.join(run_dir,
-                                  option.replace('_original_', '_quant_'))
-    quant_filename = quant_filename.replace('.jpg', '.csv')
+        quant_filename = input_image.replace('_original_', '_quant_')
+        quant_filename = quant_filename.replace('.jpg', '.csv')
 
-    calibrated_quant_filename = os.path.join(run_dir,
-                                  option.replace('_original_', '_calibrated_quant_'))
-    calibrated_quant_filename = calibrated_quant_filename.replace('.jpg', '.csv')
-    print(calibrated_quant_filename)
-
-    if os.path.isfile(input_image_filename):
-        input_image = Image.open(input_image_filename)
-        col1.header("Run Input Image")
-        col1.image(input_image, use_column_width=True)
-
-    if os.path.isfile(pred_image_filename):
-        predicted_image = Image.open(pred_image_filename)
-        col2.header("Predicted Image")
-        col2.image(predicted_image, use_column_width=True)
-
-    if os.path.isfile(thresh_image_filename):
-        thresh_image = Image.open(thresh_image_filename)
-        col3.header("Threshold Image")
-        col3.image(thresh_image, use_column_width=True)
-
-    if os.path.isfile(overlay_image_filename):
-        overlay_image = Image.open(overlay_image_filename)
-        col4.header("Overlay Image")
-        col4.image(overlay_image, use_column_width=True)
+        calibrated_quant_filename = input_image.replace('_original_',
+                                                        '_calibrated_quant_')
+        calibrated_quant_filename = calibrated_quant_filename.replace('.jpg',
+                                                                      '.csv')
 
     with quant_csv_expander:
         if os.path.isfile(quant_filename):
             dataframe = pd.read_csv(quant_filename)
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key='quantgrid')
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
             dataframe = None
-
     with calibrated_quant_csv_expander:
         if os.path.isfile(calibrated_quant_filename):
             dataframe = pd.read_csv(calibrated_quant_filename)
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key='calibrated')
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
             dataframe = None
-    with plots_quant_csv_expander:
-        if os.path.isfile(calibrated_quant_filename):
-            dataframe = pd.read_csv(calibrated_quant_filename)
-            dataframe = dataframe.assign(category='')
-            dataframe = interval(dataframe)
 
-            plt.margins(x=0)
-            plt.yticks(fontsize=16)
-            sns.set(font_scale = 1.5)
-
-
-            fig1, ax1 = plt.subplots(squeeze=True)
-            sns.barplot(x='category', y='Frequency', data=dataframe,
-                          dodge=True, palette='viridis', ax = ax1)
-            sns.despine()
-            ax1.set_xlabel('')
-            ax1.set_ylabel('Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)',  fontsize = 18)
-            plot_col1.pyplot(fig1)
-
-            fig2, ax2 = plt.subplots(squeeze=True)
-            sns.swarmplot(x='category', y='Area', data=dataframe,
-                          dodge=True, palette='viridis', ax = ax2)
-            sns.despine()
-            ax2.set_xlabel('')
-            ax2.set_ylabel(r'Area ($\mu$m*s)',  fontsize = 20)
-            plot_col2.pyplot(fig2)
-        #
-
-            fig3, ax3 = plt.subplots(squeeze=True)
-
-            sns.swarmplot(x='category', y='Height', data=dataframe,
-                               dodge=True, palette='viridis', ax = ax3)
-            sns.despine()
-            ax3.set_xlabel('')
-            ax3.set_ylabel(r'Duration - Time ($\mu$s)', fontsize = 20)
-            plot_col3.pyplot(fig3)
-
-
-
-            fig4, ax4 = plt.subplots(squeeze=True)
-            sns.swarmplot(x='category', y='Interval', data=dataframe,
-                          dodge=True, palette='viridis', ax = ax4)
-            sns.despine()
-
-            ax4.set_xlabel('')
-            ax4.set_ylabel('Spatial spread - Distance \n' + r'$(mu*s)$', fontsize = 20)
-            ax4.set_xmargin(0)
-            ax4.margins(x=0, tight=None)
-
-            plot_col4.pyplot(fig4)
-
-        else:
-            dataframe = None
+    display_plot(plot_col1, "_frequency.png")
+    display_plot(plot_col2, "_area.png")
+    display_plot(plot_col3, "_distance.png")
+    display_plot(plot_col4, "_duration.png")

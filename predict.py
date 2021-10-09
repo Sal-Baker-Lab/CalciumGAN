@@ -154,7 +154,7 @@ def load_global_model(weight_name, opt):
     return g_global_model
 
 
-def process(input_image, original_image_name, weight_name='000090', stride=16,
+def process(input_images, weight_name='000090', stride=16,
     crop_size=64, thresh=50, connectivity=8, alpha=0.7, height_calibration=1,
     width_calibration=1):
     # await asyncio.sleep(5)
@@ -168,53 +168,51 @@ def process(input_image, original_image_name, weight_name='000090', stride=16,
     g_local_model = load_local_model(weight_name, opt)
     g_global_model = load_global_model(weight_name, opt)
 
-    img_name_path = os.path.join(dirname, 'runs/' + original_image_name)
-    img = Image.open(img_name_path)
-    img_arr = np.asarray(img, dtype=np.float32)
-    img_arr = img_arr[:, :, 0]
-    out_img = strided_crop(img_arr, img_arr.shape[0], img_arr.shape[1],
-                           crop_size_h, crop_size_w, g_global_model,
-                           g_local_model, stride)
-    out_img_sv = out_img.copy()
-    out_img_sv = ((out_img_sv) * 255.0).astype('uint8')
 
-    out_img_sv = out_img_sv.astype(np.uint8)
-    out_im = Image.fromarray(out_img_sv)
-    pred_image_path = os.path.join(dirname,
-                                   'runs/' + original_image_name.replace(
-                                       '_original_', '_prediction_'))
-    out_im.save(pred_image_path)
+    for image_path in  input_images:
 
-    out_img_thresh = out_img_sv.copy()
-    thresh_img = threshold(out_img_thresh, thresh)
-    thresh_im = Image.fromarray(thresh_img)
-    threshold_image_path = os.path.join(dirname,
-                                        'runs/' + original_image_name.replace(
-                                            '_original_', '_threshold_'))
-    thresh_im.save(threshold_image_path)
+        img = Image.open(image_path)
+        img_arr = np.asarray(img, dtype=np.float32)
+        img_arr = img_arr[:, :, 0]
+        out_img = strided_crop(img_arr, img_arr.shape[0], img_arr.shape[1],
+                               crop_size_h, crop_size_w, g_global_model,
+                               g_local_model, stride)
+        out_img_sv = out_img.copy()
+        out_img_sv = ((out_img_sv) * 255.0).astype('uint8')
 
-    cc_img = thresh_img.copy()
-    df = connected_component(cc_img, connectivity)
-    quant_csv_path = os.path.join(dirname,
-                                  'runs/' + original_image_name.replace(
-                                      '_original_', '_quant_'))
-    quant_csv_path = quant_csv_path.replace('jpg', 'csv')
-    df.to_csv(quant_csv_path, index=False)
+        out_img_sv = out_img_sv.astype(np.uint8)
+        out_im = Image.fromarray(out_img_sv)
+        predicted_image_name = image_path.replace('_original_',
+                                                   '_prediction_')
 
-    calibrated_quant_csv_path = os.path.join(dirname, 'runs/' + original_image_name.replace('_original_', '_calibrated_quant_'))
+        out_im.save(predicted_image_name)
 
-    calibrated_quant_csv_path = calibrated_quant_csv_path.replace('jpg', 'csv')
-    df["Height"] = height_calibration * df["Height"]
-    df["Width"] = width_calibration * df["Width"]
-    df["Area"] = height_calibration * width_calibration * df["Area"]
+        out_img_thresh = out_img_sv.copy()
+        thresh_img = threshold(out_img_thresh, thresh)
+        thresh_im = Image.fromarray(thresh_img)
+        overlay_image_name = image_path.replace('_original_',
+                                                '_threshold_')
+        thresh_im.save(overlay_image_name)
 
-    print(calibrated_quant_csv_path)
-    df.to_csv(calibrated_quant_csv_path, index=False)
+        cc_img = thresh_img.copy()
+        df = connected_component(cc_img, connectivity)
+        quant_csv_path = image_path.replace('_original_', '_quant_')
+        quant_csv_path = quant_csv_path.replace('jpg', 'csv')
+        df.to_csv(quant_csv_path, index=False)
 
-    ovleray_img = overlay(img_arr.copy(), thresh_img.copy(), alpha)
-    ovleray_im = Image.fromarray(ovleray_img)
-    overlay_image_path = os.path.join(dirname,'runs/' + original_image_name.replace('_original_', '_overlay_'))
-    ovleray_im.save(overlay_image_path)
+        calibrated_quant_csv_path = image_path.replace('_original_', '_calibrated_quant_')
+        calibrated_quant_csv_path = calibrated_quant_csv_path.replace('jpg', 'csv')
+
+        df["Height"] = height_calibration * df["Height"]
+        df["Width"] = width_calibration * df["Width"]
+        df["Area"] = height_calibration * width_calibration * df["Area"]
+
+        df.to_csv(calibrated_quant_csv_path, index=False)
+
+        ovleray_img = overlay(img_arr.copy(), thresh_img.copy(), alpha)
+        ovleray_im = Image.fromarray(ovleray_img)
+        overlay_image_name = image_path.replace('_original_','_overlay_')
+        ovleray_im.save(overlay_image_name)
 
 if __name__ == "__main__":
     process(None, '2021-09-06 05:09:40.722')

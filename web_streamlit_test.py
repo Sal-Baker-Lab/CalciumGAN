@@ -40,6 +40,7 @@ plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
 
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
 
+
 def display_plot(col, plot_type):
     with plots_quant_csv_expander:
         plot_path = run_dir + "/" + option + plot_type
@@ -47,11 +48,13 @@ def display_plot(col, plot_type):
             plot_image = Image.open(plot_path)
             col.image(plot_image, use_column_width=True)
 
-def display_predictions(group, col, original_image_path, label, image_type):
+
+def display_predictions(col, original_image_path, label, image_type):
     image_path = original_image_path.replace("_original_", image_type)
-    image = Image.open(image_path)
-    col.header(label)
-    col.image(resize_displayed_image(image), use_column_width=False)
+    if os.path.isfile(image_path):
+        image = Image.open(image_path)
+        col.header(label)
+        col.image(resize_displayed_image(image), use_column_width=False)
 
 
 def resize_displayed_image(image, fixed_height=500):
@@ -60,9 +63,13 @@ def resize_displayed_image(image, fixed_height=500):
     image1 = image.resize((width_size, fixed_height), Image.NEAREST)
     return image1
 
+
 def interval(df):
-    df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
+    df['Interval'] = df.apply(
+        lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])),
+        axis=1)
     return df
+
 
 def genereate_widget_key():
     st.session_state.file_uploader_widget = str(randint(1000, 100000000))
@@ -131,10 +138,10 @@ if 'file_uploader_widget' not in st.session_state:
 #             dataframe = None
 
 
-
 def params():
     return "S_{}_T_{}_C_{}".format(stride_selector, threshold_selector,
                                    connectivity_selector)
+
 
 def run_id():
     return str(random.randrange(0, 1000000, 2))
@@ -147,18 +154,27 @@ def refresh_runs_dir():
     st.session_state.runs = dir
 
 
-def process(input_image, original_image_name, weight_name='000090',
+def process(run_dir, weight_name='000090',
     stride=16, crop_size=64, thresh=50, connectivity=8, alpha=0.7,
     height_calibration=1,
     width_calibration=1):
     # predict.process(input_image, run_directory, weight_name, stride, crop_size, thresh, connectivity)
-    predicted_image_name = run_dir + original_image_name.replace('_original_',
-                                                                 '_prediction_')
-    threshold_image_name = run_dir + original_image_name.replace('_original_',
-                                                                 '_threshold_')
-    input_image.save(predicted_image_name)
-    input_image.save(threshold_image_name)
-    # print(predicted_image_name)
+    input_images = list(
+        filter(os.path.isfile, glob.glob(run_dir + f"/*_original_*")))
+
+    for image_path in input_images:
+        image = Image.open(image_path)
+        predicted_image_name =  image_path.replace('_original_',
+                                                            '_prediction_')
+
+        threshold_image_name = image_path.replace('_original_',
+                                                            '_threshold_')
+
+        overlay_image_name = image_path.replace('_original_',
+                                                          '_overlay_')
+        image.save(predicted_image_name)
+        image.save(threshold_image_name)
+        image.save(overlay_image_name)
 
 
 if 'runs' not in st.session_state:
@@ -200,49 +216,57 @@ width_calibration_selector = run_container.slider('Width Calibration px',
                                                   min_value=1,
                                                   max_value=10, value=1, step=1)
 
-if input_image_buffer is not None:
-    input_image = Image.open(input_image_buffer)
+if input_image_buffer is not None and len(input_image_buffer) > 0:
+    first_input_image = Image.open(input_image_buffer[0])
     st.session_state.runs = set()
-    col1.header("Selected Image")
-    col1.image(input_image, use_column_width=True)
-    w, h = input_image.size
+    # col1.header("Selected Image")
+    # col1.image(input_image, use_column_width=True)
+    w, h = first_input_image.size
     stride_selector = run_container.slider('Stride', min_value=0,
                                            max_value=w - 64, value=3, step=1)
     submit_button = run_container.button(label='Run Prediction')
 
     if submit_button:
         run_dir = dirname + "/runs/"
-        original_image_name = input_image_buffer.name
+        # original_image_name = input_image_buffer.name
+
+        # generate run_id
         run_id = run_id()
         params = params()
         st.session_state.file_uploader_widget = str(randint(1000, 100000000))
-        print(st.session_state.file_uploader_widget)
-        input_image_name = run_id + '_original_' + params + original_image_name
-        input_image.save(run_dir + input_image_name)
+
+        # rename save input images
+        os.mkdir(run_dir + run_id)
+        for image_path in input_image_buffer:
+            new_image_name = run_id + '_original_' + params + image_path.name
+            image = Image.open(image_path)
+            image.save(run_dir + run_id + "/" + new_image_name)
+
         refresh_runs_dir()
-        process(input_image, original_image_name=input_image_name)
+        process(run_dir + run_id + "/")
 
 # Previous Runs Selection111
 option = previous_run_container.selectbox('Select Run',
                                           options=st.session_state.runs)
 if option is not None:
     run_dir = dirname + "/runs/" + option
+    input_images = list(
+        filter(os.path.isfile, glob.glob(run_dir + f"/*_original_*")))
 
-    for group in range(1, 2):
+    for input_image in input_images:
+        display_predictions(col1, input_image, 'Input Image', "_original_")
+        display_predictions(col2, input_image, 'Predicted Image',
+                            "_prediction_")
+        display_predictions(col3, input_image, 'Threshold Image', "_threshold_")
+        display_predictions(col4, input_image, 'Overlay Image', "_overlay_")
 
-        group_original_image = list(filter(os.path.isfile, glob.glob(run_dir + '/*group1_original_*')))[0]
-        display_predictions(group, col1, group_original_image, 'Input Image', "_original_")
-        display_predictions(group, col2, group_original_image, 'Predicted Image', "_prediction_")
-        display_predictions(group, col3, group_original_image, 'Threshold Image', "_threshold_")
-        display_predictions(group, col4, group_original_image,  'Overlay Image', "_overlay_")
-
-
-        quant_filename = group_original_image.replace('_original_','_quant_')
+        quant_filename = input_image.replace('_original_', '_quant_')
         quant_filename = quant_filename.replace('.jpg', '.csv')
 
-        calibrated_quant_filename = group_original_image.replace('_original_','_calibrated_quant_')
-        calibrated_quant_filename = calibrated_quant_filename.replace('.jpg', '.csv')
-
+        calibrated_quant_filename = input_image.replace('_original_',
+                                                        '_calibrated_quant_')
+        calibrated_quant_filename = calibrated_quant_filename.replace('.jpg',
+                                                                      '.csv')
 
     with quant_csv_expander:
         if os.path.isfile(quant_filename):
@@ -261,11 +285,3 @@ if option is not None:
     display_plot(plot_col2, "_area.png")
     display_plot(plot_col3, "_distance.png")
     display_plot(plot_col4, "_duration.png")
-
-
-
-
-
-
-
-
