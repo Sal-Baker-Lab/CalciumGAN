@@ -190,9 +190,9 @@ def process(input_images, weight_name='000090', stride=16,
         out_img_thresh = out_img_sv.copy()
         thresh_img = threshold(out_img_thresh, thresh)
         thresh_im = Image.fromarray(thresh_img)
-        overlay_image_name = image_path.replace('_original_',
+        threshold_image_name = image_path.replace('_original_',
                                                 '_threshold_')
-        thresh_im.save(overlay_image_name)
+        thresh_im.save(threshold_image_name)
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img, connectivity)

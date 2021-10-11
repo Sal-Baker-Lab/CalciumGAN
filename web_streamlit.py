@@ -93,7 +93,7 @@ def run_id():
 
 
 def refresh_runs_dir():
-    runs = filter(os.path.isfile, glob.glob(dirname + '/runs/*original*'))
+    runs = filter(os.path.isdir, glob.glob(dirname + '/runs/*'))
     runs = sorted(runs, key=os.path.getmtime, reverse=True)
     dir = tuple(map(lambda x: os.path.basename(x), runs))
     st.session_state.runs = dir
