@@ -196,6 +196,7 @@ if option is not None:
         display_predictions(col4, input_image, 'Overlay Image', "_overlay_")
 
     with quant_csv_expander:
+        print(f'{run_dir}/quant.csv')
         if os.path.isfile(f'{run_dir}/quant.csv'):
             dataframe = pd.read_csv(f'{run_dir}/quant.csv')
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)

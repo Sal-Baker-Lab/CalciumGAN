@@ -201,12 +201,13 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img, connectivity)
-        global_quant_df.append(df, sort = False)
+        global_quant_df = global_quant_df.append(df, sort = False)
+        print(global_quant_df)
 
         df["Height"] = height_calibration * df["Height"]
         df["Width"] = width_calibration * df["Width"]
         df["Area"] = height_calibration * width_calibration * df["Area"]
-        global_cal_quant_df.append(df, sort = False)
+        global_cal_quant_df = global_cal_quant_df.append(df, sort = False)
 
         ovleray_img = overlay(img_arr.copy(), thresh_img.copy(), alpha)
         ovleray_im = Image.fromarray(ovleray_img)
