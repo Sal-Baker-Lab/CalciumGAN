@@ -168,8 +168,11 @@ def process(input_images, weight_name='000090', stride=16,
     g_local_model = load_local_model(weight_name, opt)
     g_global_model = load_global_model(weight_name, opt)
 
+    global_df = pd.DataFrame()
+    global_df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
 
-    for image_path in  input_images:
+
+    for image_path in input_images:
 
         img = Image.open(image_path)
         img_arr = np.asarray(img, dtype=np.float32)
@@ -199,6 +202,7 @@ def process(input_images, weight_name='000090', stride=16,
         quant_csv_path = image_path.replace('_original_', '_quant_')
         quant_csv_path = quant_csv_path.replace('jpg', 'csv')
         df.to_csv(quant_csv_path, index=False)
+        global_df.append(df, sort = False)
 
         calibrated_quant_csv_path = image_path.replace('_original_', '_calibrated_quant_')
         calibrated_quant_csv_path = calibrated_quant_csv_path.replace('jpg', 'csv')
@@ -213,6 +217,11 @@ def process(input_images, weight_name='000090', stride=16,
         ovleray_im = Image.fromarray(ovleray_img)
         overlay_image_name = image_path.replace('_original_','_overlay_')
         ovleray_im.save(overlay_image_name)
+
+        global_dataframe_name = image_path.replace('_original_', '_global_quant_')
+
+
+    df.to_csv(global_dataframe_name, index=False)
 
 if __name__ == "__main__":
     process(None, '2021-09-06 05:09:40.722')
