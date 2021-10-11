@@ -199,13 +199,13 @@ if option is not None:
         print(f'{run_dir}/quant.csv')
         if os.path.isfile(f'{run_dir}/quant.csv'):
             dataframe = pd.read_csv(f'{run_dir}/quant.csv')
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key=str(randint(1000, 100000000)))
         else:
             dataframe = None
     with calibrated_quant_csv_expander:
         if os.path.isfile(f'{run_dir}/calibrated_quant.csv'):
             dataframe = pd.read_csv(f'{run_dir}/calibrated_quant.csv')
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key=str(randint(1000, 100000000)))
         else:
             dataframe = None
 
