@@ -154,7 +154,7 @@ def load_global_model(weight_name, opt):
     return g_global_model
 
 
-def process(input_images, weight_name='000090', stride=16,
+def process(input_images, run_dir, weight_name='000090', stride=16,
     crop_size=64, thresh=50, connectivity=8, alpha=0.7, height_calibration=1,
     width_calibration=1):
     # await asyncio.sleep(5)
@@ -168,9 +168,11 @@ def process(input_images, weight_name='000090', stride=16,
     g_local_model = load_local_model(weight_name, opt)
     g_global_model = load_global_model(weight_name, opt)
 
-    global_df = pd.DataFrame(pd.np.empty((0, 6)))
-    global_df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
+    global_quant_df = pd.DataFrame(pd.np.empty((0, 6)))
+    global_quant_df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
 
+    global_cal_quant_df = pd.DataFrame(pd.np.empty((0, 6)))
+    global_cal_quant_df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
 
     for image_path in input_images:
 
@@ -199,30 +201,21 @@ def process(input_images, weight_name='000090', stride=16,
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img, connectivity)
-        quant_csv_path = image_path.replace('_original_', '_quant_')
-        quant_csv_path = quant_csv_path.replace('jpg', 'csv')
-        df.to_csv(quant_csv_path, index=False)
-        global_df.append(df, sort = False)
-
-        calibrated_quant_csv_path = image_path.replace('_original_', '_calibrated_quant_')
-        calibrated_quant_csv_path = calibrated_quant_csv_path.replace('jpg', 'csv')
+        global_quant_df.append(df, sort = False)
 
         df["Height"] = height_calibration * df["Height"]
         df["Width"] = width_calibration * df["Width"]
         df["Area"] = height_calibration * width_calibration * df["Area"]
-
-        df.to_csv(calibrated_quant_csv_path, index=False)
+        global_cal_quant_df.append(df, sort = False)
 
         ovleray_img = overlay(img_arr.copy(), thresh_img.copy(), alpha)
         ovleray_im = Image.fromarray(ovleray_img)
         overlay_image_name = image_path.replace('_original_','_overlay_')
         ovleray_im.save(overlay_image_name)
 
-        global_dataframe_name = calibrated_quant_csv_path.replace('_calibrated_', '_global_quant_')
-        
 
-
-    df.to_csv(global_dataframe_name, index=False)
+    global_quant_df.to_csv(f'{run_dir}/quant.csv', index=False)
+    global_cal_quant_df.to_csv(f'{run_dir}/calibrated_quant.csv', index=False)
 
 if __name__ == "__main__":
     process(None, '2021-09-06 05:09:40.722')

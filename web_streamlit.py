@@ -107,7 +107,7 @@ def process(run_dir, weight_name='000090',
     input_images = list(
         filter(os.path.isfile, glob.glob(run_dir + f"/*_original_*")))
 
-    predict.process(input_images, weight_name, stride,
+    predict.process(input_images, run_dir, weight_name, stride,
                     crop_size, thresh, connectivity, alpha, height_calibration,
                     width_calibration)
 
@@ -204,14 +204,14 @@ if option is not None:
                                                                       '.csv')
 
     with quant_csv_expander:
-        if os.path.isfile(quant_filename):
-            dataframe = pd.read_csv(quant_filename)
+        if os.path.isfile(f'{run_dir}/quant.csv'):
+            dataframe = pd.read_csv(f'{run_dir}/quant.csv')
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
             dataframe = None
     with calibrated_quant_csv_expander:
-        if os.path.isfile(calibrated_quant_filename):
-            dataframe = pd.read_csv(calibrated_quant_filename)
+        if os.path.isfile(f'{run_dir}/cal_quant.csv'):
+            dataframe = pd.read_csv(f'{run_dir}/calibrated_quant.csv')
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
             dataframe = None
