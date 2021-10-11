@@ -168,7 +168,7 @@ def process(input_images, weight_name='000090', stride=16,
     g_local_model = load_local_model(weight_name, opt)
     g_global_model = load_global_model(weight_name, opt)
 
-    global_df = pd.DataFrame()
+    global_df = pd.DataFrame(pd.np.empty((0, 6)))
     global_df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
 
 
@@ -218,7 +218,8 @@ def process(input_images, weight_name='000090', stride=16,
         overlay_image_name = image_path.replace('_original_','_overlay_')
         ovleray_im.save(overlay_image_name)
 
-        global_dataframe_name = image_path.replace('_original_', '_global_quant_')
+        global_dataframe_name = calibrated_quant_csv_path.replace('_calibrated_', '_global_quant_')
+        
 
 
     df.to_csv(global_dataframe_name, index=False)
