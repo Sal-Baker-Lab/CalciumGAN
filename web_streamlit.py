@@ -195,14 +195,6 @@ if option is not None:
         display_predictions(col3, input_image, 'Threshold Image', "_threshold_")
         display_predictions(col4, input_image, 'Overlay Image', "_overlay_")
 
-        quant_filename = input_image.replace('_original_', '_quant_')
-        quant_filename = quant_filename.replace('.jpg', '.csv')
-
-        calibrated_quant_filename = input_image.replace('_original_',
-                                                        '_calibrated_quant_')
-        calibrated_quant_filename = calibrated_quant_filename.replace('.jpg',
-                                                                      '.csv')
-
     with quant_csv_expander:
         if os.path.isfile(f'{run_dir}/quant.csv'):
             dataframe = pd.read_csv(f'{run_dir}/quant.csv')
@@ -210,7 +202,7 @@ if option is not None:
         else:
             dataframe = None
     with calibrated_quant_csv_expander:
-        if os.path.isfile(f'{run_dir}/cal_quant.csv'):
+        if os.path.isfile(f'{run_dir}/calibrated_quant.csv'):
             dataframe = pd.read_csv(f'{run_dir}/calibrated_quant.csv')
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
         else:
