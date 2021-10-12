@@ -204,12 +204,11 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
         df['Image']=' '
         df.at[0,'Image']=os.path.basename(image_path)
         global_quant_df = global_quant_df.append(df, sort = False)
-        print(global_quant_df)
 
         df["Height"] = height_calibration * df["Height"]
         df["Width"] = width_calibration * df["Width"]
         df["Area"] = height_calibration * width_calibration * df["Area"]
-        df['Image'] = ''
+        df['Image'] = ' '
         df[0,'Image']=os.path.basename(image_path)
         global_cal_quant_df = global_cal_quant_df.append(df, sort = False)
 
