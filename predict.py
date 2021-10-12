@@ -123,7 +123,7 @@ def connected_component(img, connectivity=8):
     stats = output[2]
     df = pd.DataFrame(stats[1:])
     df.columns = ['Left', 'Top', 'Width', 'Height', 'Area']
-    df.insert(0, 'Frequency', df.index)
+    df.insert(0, 'Frequency', df.index + 1)
     return df
 
 
@@ -168,11 +168,11 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
     g_local_model = load_local_model(weight_name, opt)
     g_global_model = load_global_model(weight_name, opt)
 
-    global_quant_df = pd.DataFrame(pd.np.empty((0, 6)))
-    global_quant_df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
+    global_quant_df = pd.DataFrame(pd.np.empty((0, 7)))
+    global_quant_df.columns = ['Image', 'Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
 
-    global_cal_quant_df = pd.DataFrame(pd.np.empty((0, 6)))
-    global_cal_quant_df.columns = ['Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
+    global_cal_quant_df = pd.DataFrame(pd.np.empty((0, 7)))
+    global_cal_quant_df.columns = ['Image','Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
 
     for image_path in input_images:
 
@@ -201,12 +201,16 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img, connectivity)
+        df['Image']=' '
+        df.at[0,'Image']=os.path.basename(image_path)
         global_quant_df = global_quant_df.append(df, sort = False)
         print(global_quant_df)
 
         df["Height"] = height_calibration * df["Height"]
         df["Width"] = width_calibration * df["Width"]
         df["Area"] = height_calibration * width_calibration * df["Area"]
+        df['Image'] = ''
+        df[0,'Image']=os.path.basename(image_path)
         global_cal_quant_df = global_cal_quant_df.append(df, sort = False)
 
         ovleray_img = overlay(img_arr.copy(), thresh_img.copy(), alpha)
