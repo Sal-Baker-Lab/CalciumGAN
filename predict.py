@@ -24,6 +24,7 @@ from sklearn.metrics import confusion_matrix, jaccard_similarity_score, \
 import gc
 import glob
 import pycm
+import stats
 
 import warnings
 
@@ -201,15 +202,15 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img, connectivity)
-        df['Image']=' '
-        df.at[0,'Image']=os.path.basename(image_path)
+        # df['Image']=' '
+        # df.at[0,'Image']=os.path.basename(image_path)
         global_quant_df = global_quant_df.append(df, sort = False)
 
         df["Height"] = height_calibration * df["Height"]
         df["Width"] = width_calibration * df["Width"]
         df["Area"] = height_calibration * width_calibration * df["Area"]
-        df['Image'] = ' '
-        df[0,'Image']=os.path.basename(image_path)
+        # df['Image'] = ' '
+        # df[0,'Image']=os.path.basename(image_path)
         global_cal_quant_df = global_cal_quant_df.append(df, sort = False)
 
         ovleray_img = overlay(img_arr.copy(), thresh_img.copy(), alpha)
@@ -217,9 +218,12 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
         overlay_image_name = image_path.replace('_original_','_overlay_')
         ovleray_im.save(overlay_image_name)
 
-
+    stats_df = stats.stats(global_quant_df)
+    stats_df.to_csv(f'{run_dir}/quant_stats.csv', index=False)
     global_quant_df.to_csv(f'{run_dir}/quant.csv', index=False)
     global_cal_quant_df.to_csv(f'{run_dir}/calibrated_quant.csv', index=False)
+    stats.generate_frequency_plot(stats_df)
+
 
 if __name__ == "__main__":
     process(None, '2021-09-06 05:09:40.722')
