@@ -202,7 +202,8 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img, connectivity)
-        # df['Image']=' '
+        df['Image']=os.path.basename(image_path)
+        #df['Image']=' '
         # df.at[0,'Image']=os.path.basename(image_path)
         global_quant_df = global_quant_df.append(df, sort = False)
 
