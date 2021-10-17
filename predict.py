@@ -222,7 +222,10 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
     stats_df.to_csv(f'{run_dir}/quant_stats.csv', index=False)
     global_quant_df.to_csv(f'{run_dir}/quant.csv', index=False)
     global_cal_quant_df.to_csv(f'{run_dir}/calibrated_quant.csv', index=False)
-    stats.generate_frequency_plot(stats_df)
+    stats.generate_frequency_plot(stats_df, file_name=f'{run_dir}/frequency.jpg')
+    stats.generate_area_plot(stats_df, file_name=f'{run_dir}/area.jpg')
+    stats.generate_height_plot(stats_df, file_name=f'{run_dir}/height.jpg')
+    stats.generate_interval_plot(stats_df, file_name=f'{run_dir}/interval.jpg')
 
 
 if __name__ == "__main__":

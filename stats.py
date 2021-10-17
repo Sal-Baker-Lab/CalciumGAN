@@ -12,7 +12,7 @@ def stats(global_quant_df):
     stats_df.drop('Area_count', axis=1, inplace=True)
     return stats_df
 
-def generate_frequency_plot(df):
+def generate_frequency_plot(df, file_name=None):
     df = df.assign(category='')
     fig, ax = plt.subplots(squeeze=True)
     fig.tight_layout()
@@ -24,9 +24,12 @@ def generate_frequency_plot(df):
     g.set(xticks=[])
     ax.set_ylabel(r'Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)', fontsize = 18)
     plt.title("Events", fontsize=18)
-    plt.show()
+    if file_name is None:
+        plt.savefig(file_name)
+    else:
+        plt.show()
 
-def generate_height_plot(df):
+def generate_height_plot(df, file_name=None):
     df = df.assign(category='')
     fig, ax = plt.subplots(squeeze=True)
     fig.tight_layout()
@@ -38,10 +41,13 @@ def generate_height_plot(df):
     g.set(xticks=[])
     ax.set_ylabel(r'Time ($\mu$s)', fontsize = 18)
     plt.title("Duration", fontsize=18)
-    plt.show()
+    if file_name is None:
+        plt.savefig(file_name)
+    else:
+        plt.show()
 
 
-def generate_area_plot(df):
+def generate_area_plot(df, file_name):
     df = df.assign(category='')
     fig, ax = plt.subplots(squeeze=True)
     fig.tight_layout()
@@ -53,9 +59,12 @@ def generate_area_plot(df):
     g.set(xticks=[])
     ax.set_ylabel(r'Area ($\mu$m*s)', fontsize = 18)
     plt.title("Area", fontsize=18)
-    plt.show()
+    if file_name is None:
+        plt.savefig(file_name)
+    else:
+        plt.show()
 
-def generate_interval_plot(df):
+def generate_interval_plot(df, file_name):
     df = df.assign(category='')
     fig, ax = plt.subplots(squeeze=True)
     fig.tight_layout()
@@ -67,7 +76,10 @@ def generate_interval_plot(df):
     g.set(xticks=[])
     ax.set_ylabel(r'Distance \n' + r'$(mu*s)$', fontsize = 18)
     plt.title("Spatial spread", fontsize=18)
-    plt.show()
+    if file_name is None:
+        plt.savefig(file_name)
+    else:
+        plt.show()
 
 df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/quant1.csv')
 
