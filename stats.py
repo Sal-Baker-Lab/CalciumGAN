@@ -29,12 +29,12 @@ def generate_frequency_plot(df, file_name=None):
     else:
         plt.show()
 
-def generate_height_plot(df, file_name=None):
+def generate_duration_plot(df, file_name=None):
     df = df.assign(category='')
     fig, ax = plt.subplots(squeeze=True)
     fig.tight_layout()
 
-    g = sns.swarmplot(x='category', y='Height_mean', data=df, dodge=True, palette='viridis', ax=ax)
+    g = sns.swarmplot(x='category', y='Width_mean', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
 
     ax.set_xlabel('')
@@ -69,7 +69,7 @@ def generate_interval_plot(df, file_name):
     fig, ax = plt.subplots(squeeze=True)
     fig.tight_layout()
 
-    g = sns.swarmplot(x='category', y='Width_mean', data=df, dodge=True, palette='viridis', ax=ax)
+    g = sns.swarmplot(x='category', y='Interval_mean', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
 
     ax.set_xlabel('')

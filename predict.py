@@ -32,6 +32,9 @@ warnings.filterwarnings('ignore')
 
 # import keras.backend.tensorflow_backend as tb
 # tb._SYMBOLIC_SCOPE.value = True
+def interval(df):
+    df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
+    return df
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
@@ -170,10 +173,10 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
     g_global_model = load_global_model(weight_name, opt)
 
     global_quant_df = pd.DataFrame(pd.np.empty((0, 7)))
-    global_quant_df.columns = ['Image', 'Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
+    global_quant_df.columns = ['Image', 'Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Interval']
 
     global_cal_quant_df = pd.DataFrame(pd.np.empty((0, 7)))
-    global_cal_quant_df.columns = ['Image','Frequency', 'Left', 'Top', 'Width', 'Height', 'Area']
+    global_cal_quant_df.columns = ['Image','Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Interval']
 
     for image_path in input_images:
 
@@ -202,6 +205,7 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
         cc_img = thresh_img.copy()
         df = connected_component(cc_img, connectivity)
+        df = interval(df)
         df['Image']=os.path.basename(image_path)
         #df['Image']=' '
         # df.at[0,'Image']=os.path.basename(image_path)
@@ -210,6 +214,7 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
         df["Height"] = height_calibration * df["Height"]
         df["Width"] = width_calibration * df["Width"]
         df["Area"] = height_calibration * width_calibration * df["Area"]
+        df = interval(df)
         # df['Image'] = ' '
         # df[0,'Image']=os.path.basename(image_path)
         global_cal_quant_df = global_cal_quant_df.append(df, sort = False)
@@ -225,8 +230,8 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
     global_cal_quant_df.to_csv(f'{run_dir}/calibrated_quant.csv', index=False)
     stats.generate_frequency_plot(stats_df, file_name=f'{run_dir}/frequency.jpg')
     stats.generate_area_plot(stats_df, file_name=f'{run_dir}/area.jpg')
-    stats.generate_height_plot(stats_df, file_name=f'{run_dir}/height.jpg')
-    stats.generate_interval_plot(stats_df, file_name=f'{run_dir}/interval.jpg')
+    stats.generate_duration_plot(stats_df, file_name=f'{run_dir}/duration.jpg')
+    stats.generate_interval_plot(stats_df, file_name=f'{run_dir}/spatial_spread.jpg')
 
 
 if __name__ == "__main__":
