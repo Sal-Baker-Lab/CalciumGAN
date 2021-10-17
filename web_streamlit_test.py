@@ -222,7 +222,8 @@ if option is not None:
         else:
             dataframe = None
 
-    display_plot(plot_col1, "_frequency.png")
-    display_plot(plot_col2, "_area.png")
-    display_plot(plot_col3, "_distance.png")
-    display_plot(plot_col4, "_duration.png")
+    display_plot(plot_col1, "frequency.png")
+    display_plot(plot_col2, "area.png")
+    display_plot(plot_col3, "duration.png")
+    display_plot(plot_col4, "spatial_spread.png")
+
