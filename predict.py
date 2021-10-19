@@ -172,10 +172,10 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
     g_local_model = load_local_model(weight_name, opt)
     g_global_model = load_global_model(weight_name, opt)
 
-    global_quant_df = pd.DataFrame(pd.np.empty((0, 7)))
+    global_quant_df = pd.DataFrame(pd.np.empty((0, 8)))
     global_quant_df.columns = ['Image', 'Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Interval']
 
-    global_cal_quant_df = pd.DataFrame(pd.np.empty((0, 7)))
+    global_cal_quant_df = pd.DataFrame(pd.np.empty((0, 8)))
     global_cal_quant_df.columns = ['Image','Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Interval']
 
     for image_path in input_images:
@@ -224,8 +224,8 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
         overlay_image_name = image_path.replace('_original_','_overlay_')
         ovleray_im.save(overlay_image_name)
 
-    stats_df = stats.stats(global_quant_df)
-    stats_df.to_csv(f'{run_dir}/quant_stats.csv', index=False)
+    stats_df = stats.stats(global_cal_quant_df)
+    stats_df.to_csv(f'{run_dir}/calibrated_quant_stats.csv', index=False)
     global_quant_df.to_csv(f'{run_dir}/quant.csv', index=False)
     global_cal_quant_df.to_csv(f'{run_dir}/calibrated_quant.csv', index=False)
     stats.generate_frequency_plot(stats_df, file_name=f'{run_dir}/frequency.jpg')

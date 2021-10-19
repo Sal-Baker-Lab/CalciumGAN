@@ -59,7 +59,8 @@ def grid_options(df):
 
 def display_plot(col, plot_type):
     with plots_quant_csv_expander:
-        plot_path = run_dir + "/" + option + plot_type
+        plot_path = run_dir + "/" + plot_type
+        print(plot_path)
         if os.path.isfile(plot_path):
             plot_image = Image.open(plot_path)
             col.image(plot_image, use_column_width=True)
@@ -202,10 +203,10 @@ if option is not None:
         else:
             dataframe = None
 
-    display_plot(plot_col1, "frequency.png")
-    display_plot(plot_col2, "area.png")
-    display_plot(plot_col3, "duration.png")
-    display_plot(plot_col4, "spatial_spread.png")
+    display_plot(plot_col1, "frequency.jpg")
+    display_plot(plot_col2, "area.jpg")
+    display_plot(plot_col3, "duration.jpg")
+    display_plot(plot_col4, "spatial_spread.jpg")
 
     # Export Container
 def create_download_zip(zip_directory, zip_destination, filename):
