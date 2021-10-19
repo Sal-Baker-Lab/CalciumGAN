@@ -11,6 +11,8 @@ import shutil
 from random import randint
 import seaborn as sns
 import matplotlib.pyplot as plt
+from st_aggrid.grid_options_builder import GridOptionsBuilder
+
 
 # Streamlit Page Configuration
 dirname = os.path.dirname(__file__)
@@ -30,6 +32,7 @@ st.sidebar.markdown("Export All Runs")
 export_container = st.sidebar.container()
 
 main_container = st.container()
+header_main_container = st.container()
 quant_csv_expander = main_container.expander(
     label='Click to expand and view Quant result')
 calibrated_quant_csv_expander = main_container.expander(
@@ -37,13 +40,22 @@ calibrated_quant_csv_expander = main_container.expander(
 plots_quant_csv_expander = main_container.expander(
     label='Click to view plots')
 plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
-
+colh1,colh2 = header_main_container.columns(2)
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
+
+# grid option
+def grid_options(df):
+    gb = GridOptionsBuilder.from_dataframe(df)
+    gb.configure_default_column(groupable=True, value=True, enableRowGroup=True)
+    #gb.configure_column(field='Image', editable=True, rowGroup=True, enableRowGroup=True)
+    gridOptions = gb.build()
+    return gridOptions
 
 
 def display_plot(col, plot_type):
     with plots_quant_csv_expander:
-        plot_path = run_dir + "/" + option + plot_type
+        plot_path = run_dir + "/" + plot_type
+        print(plot_path)
         if os.path.isfile(plot_path):
             plot_image = Image.open(plot_path)
             col.image(plot_image, use_column_width=True)
@@ -133,12 +145,6 @@ def create_download_zip(zip_directory, zip_destination, filename):
         href = f'<a href="data:file/zip;base64,{b64}" download=\'{filename}.zip\'>download file </a>'
         export_container.markdown(href, unsafe_allow_html=True)
 
-
-download_runs = export_container.button(label='Zip and Export All Runs')
-if download_runs:
-    run_dir = dirname + "/runs/"
-    create_download_zip(run_dir, dirname + '/tmp', 'GanCalcium')
-
 # Run Container
 
 input_image_buffer = run_container.file_uploader("Upload an image",
@@ -201,29 +207,38 @@ if option is not None:
         display_predictions(col3, input_image, 'Threshold Image', "_threshold_")
         display_predictions(col4, input_image, 'Overlay Image', "_overlay_")
 
-        quant_filename = input_image.replace('_original_', '_quant_')
-        quant_filename = quant_filename.replace('.jpg', '.csv')
-
-        calibrated_quant_filename = input_image.replace('_original_',
-                                                        '_calibrated_quant_')
-        calibrated_quant_filename = calibrated_quant_filename.replace('.jpg',
-                                                                      '.csv')
-
     with quant_csv_expander:
-        if os.path.isfile(quant_filename):
-            dataframe = pd.read_csv(quant_filename)
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+        print(f'{run_dir}/quant.csv')
+        if os.path.isfile(f'{run_dir}/quant.csv'):
+            dataframe = pd.read_csv(f'{run_dir}/quant.csv')
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key=str(randint(1000, 100000000)), gridOptions=grid_options(dataframe))
         else:
             dataframe = None
     with calibrated_quant_csv_expander:
-        if os.path.isfile(calibrated_quant_filename):
-            dataframe = pd.read_csv(calibrated_quant_filename)
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True)
+        if os.path.isfile(f'{run_dir}/calibrated_quant.csv'):
+            dataframe = pd.read_csv(f'{run_dir}/calibrated_quant.csv')
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key=str(randint(1000, 100000000)))
         else:
             dataframe = None
 
-    display_plot(plot_col1, "frequency.png")
-    display_plot(plot_col2, "area.png")
-    display_plot(plot_col3, "duration.png")
-    display_plot(plot_col4, "spatial_spread.png")
+    display_plot(plot_col1, "frequency.jpg")
+    display_plot(plot_col2, "area.jpg")
+    display_plot(plot_col3, "duration.jpg")
+    display_plot(plot_col4, "spatial_spread.jpg")
 
+    # Export Container
+def create_download_zip(zip_directory, zip_destination, filename):
+    if os.path.exists(zip_destination + '/' + filename + '.zip'):
+        os.remove(zip_destination + '/' + filename + '.zip')
+    shutil.make_archive(zip_destination + '/' + filename, 'zip', zip_directory)
+    with open(zip_destination + '/' + filename + '.zip', 'rb') as f:
+        bytes = f.read()
+        b64 = base64.b64encode(bytes).decode()
+        href = f'<a href="data:file/zip;base64,{b64}" download=\'{filename}.zip\'>download file </a>'
+        export_container.markdown(href, unsafe_allow_html=True)
+
+
+download_runs = export_container.button(label='Zip and Export All Runs')
+if download_runs:
+    run_dir = dirname + "/runs/" + option
+    create_download_zip(run_dir, dirname + '/tmp', f'GanCalcium_run_{option}')
