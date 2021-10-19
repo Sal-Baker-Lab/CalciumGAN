@@ -1,14 +1,25 @@
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
-import altair as alt
-import random
 import numpy
+import seaborn as sns
+import pandas as pd
 
-PLOT_W=5
-PLOT_H=6
 PLOT_TITLE_FONT_S=12
 PLOT_LABEL_FONT_S=10
+
+
+def size_plot(plt):
+    N = 1
+    plt.gca().margins(x=0)
+    plt.gcf().canvas.draw()
+    tl = plt.gca().get_xticklabels()
+    maxsize = max([t.get_window_extent().width for t in tl])
+    m = 0.2 # inch margin
+    s = maxsize/plt.gcf().dpi*N+2*m
+    margin = m/plt.gcf().get_size_inches()[0]
+
+    plt.gcf().subplots_adjust(left=margin, right=1.-margin)
+    plt.gcf().set_size_inches(s, plt.gcf().get_size_inches()[1])
+
 
 def stats(global_quant_df):
     stats_df = global_quant_df.groupby(by=["Image"]).agg(['mean', 'count'])
@@ -23,10 +34,10 @@ def stats(global_quant_df):
 def generate_frequency_plot(df, file_name=None):
     df['category'] = numpy.random.uniform(0, 1, len(df))
     fig, ax = plt.subplots()
-    ax.figure.set_size_inches(PLOT_W, PLOT_H)
 
     g = sns.swarmplot(x='category', y='Frequency_count', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
+    size_plot(plt)
 
     ax.set_xlabel('')
     g.set(xticks=[])
@@ -40,10 +51,10 @@ def generate_frequency_plot(df, file_name=None):
 def generate_duration_plot(df, file_name=None):
     df['category'] = numpy.random.uniform(0, 1, len(df))
     fig, ax = plt.subplots()
-    ax.figure.set_size_inches(PLOT_W, PLOT_H)
 
     g = sns.swarmplot(x='category', y='Width_mean', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
+    size_plot(plt)
 
     ax.set_xlabel('')
     g.set(xticks=[])
@@ -54,16 +65,14 @@ def generate_duration_plot(df, file_name=None):
     else:
         plt.show()
 
-
-
 def generate_area_plot(df, file_name = None):
 
     df['category'] = numpy.random.uniform(0, 1, len(df))
     fig, ax = plt.subplots()
-    ax.figure.set_size_inches(PLOT_W, PLOT_H)
 
     g = sns.swarmplot(x='category', y='Area_mean', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
+    size_plot(plt)
 
     ax.set_xlabel('')
     g.set(xticks=[])
@@ -77,33 +86,24 @@ def generate_area_plot(df, file_name = None):
 def generate_interval_plot(df, file_name):
     df['category'] = numpy.random.uniform(0, 1, len(df))
     fig, ax = plt.subplots()
-    ax.figure.set_size_inches(PLOT_W, PLOT_H)
 
     g = sns.swarmplot(x='category', y='Interval_mean', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
+    size_plot(plt)
 
     ax.set_xlabel('')
     g.set(xticks=[])
     ax.set_ylabel(r'Distance \n' + r'$(mu*s)$', fontsize = PLOT_LABEL_FONT_S)
     plt.title("Spatial spread", fontsize=PLOT_TITLE_FONT_S)
+
     if file_name is not None:
         plt.savefig(file_name)
     else:
         plt.show()
 
-# df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/723780/quant.csv')
-
-#print(type(df))
-#stats_df = stats(df):
-
-#print(stats_df)
-# generate_height_plot(stats_df)
-# generate_frequency_plot(stats_df)
-# alt.renderers.enable('altair_viewer')
-
-# generate_area_plot(df)
-# print('test')
-# generate_interval_plot(stats_df)
+df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/723780/quant_stats.csv')
+#
+generate_interval_plot(df, file_name=None)
 
 
 
