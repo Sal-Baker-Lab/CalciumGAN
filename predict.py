@@ -37,7 +37,7 @@ def interval(df):
     return df
 
 def remove_image_duplicate_name(df):
-    df['Image']=df.apply(lambda x: x['Image'] if x['Image'] == x.shift(1)['Image'] else ' ', axis=1)
+    df['Image']=df.apply(lambda x: x['Image'] if x['Frequency'] == 1 else ' ', axis=1)
     return df
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
