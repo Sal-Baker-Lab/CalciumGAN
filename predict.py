@@ -36,6 +36,10 @@ def interval(df):
     df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
     return df
 
+def remove_image_duplicate_name(df):
+    df['Image']=df.apply(lambda x: x['Image'] if x['Image'] == x.shift(1)['Image'] else ' ', axis=1)
+    return df
+
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
@@ -224,10 +228,19 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
         overlay_image_name = image_path.replace('_original_','_overlay_')
         ovleray_im.save(overlay_image_name)
 
+    # stats file
     stats_df = stats.stats(global_cal_quant_df)
     stats_df.to_csv(f'{run_dir}/calibrated_quant_stats.csv', index=False)
+
+    # quant file
+    global_quant_df = remove_image_duplicate_name(global_quant_df)
     global_quant_df.to_csv(f'{run_dir}/quant.csv', index=False)
+
+    # calibrated quant file
+    global_cal_quant_df = remove_image_duplicate_name(global_cal_quant_df)
     global_cal_quant_df.to_csv(f'{run_dir}/calibrated_quant.csv', index=False)
+
+    # plots from stats file
     stats.generate_frequency_plot(stats_df, file_name=f'{run_dir}/frequency.jpg')
     stats.generate_area_plot(stats_df, file_name=f'{run_dir}/area.jpg')
     stats.generate_duration_plot(stats_df, file_name=f'{run_dir}/duration.jpg')
