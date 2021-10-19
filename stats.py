@@ -5,8 +5,8 @@ import altair as alt
 import random
 import numpy
 
-PLOT_W=2
-PLOT_H=5
+PLOT_W=5
+PLOT_H=6
 PLOT_TITLE_FONT_S=12
 PLOT_LABEL_FONT_S=10
 
@@ -48,7 +48,7 @@ def generate_duration_plot(df, file_name=None):
     ax.set_xlabel('')
     g.set(xticks=[])
     ax.set_ylabel(r'Time ($\mu$s)', fontsize = PLOT_LABEL_FONT_S)
-    plt.title("Duration", fontsize=PLOT_LABEL_FONT_S)
+    plt.title("Duration", fontsize=PLOT_TITLE_FONT_S)
     if file_name is not None:
         plt.savefig(file_name)
     else:
@@ -67,8 +67,8 @@ def generate_area_plot(df, file_name = None):
 
     ax.set_xlabel('')
     g.set(xticks=[])
-    ax.set_ylabel(r'Area ($\mu$m*s)', fontsize = PLOT_TITLE_FONT_S)
-    plt.title("Area", fontsize=PLOT_LABEL_FONT_S)
+    ax.set_ylabel(r'Area ($\mu$m*s)', fontsize = PLOT_LABEL_FONT_S)
+    plt.title("Area", fontsize=PLOT_TITLE_FONT_S)
     if file_name is not None:
         plt.savefig(file_name)
     else:
@@ -94,7 +94,7 @@ def generate_interval_plot(df, file_name):
 # df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/723780/quant.csv')
 
 #print(type(df))
-#stats_df = stats(df)
+#stats_df = stats(df):
 
 #print(stats_df)
 # generate_height_plot(stats_df)
