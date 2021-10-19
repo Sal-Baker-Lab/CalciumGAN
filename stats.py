@@ -2,7 +2,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import altair as alt
-from vega_datasets import data
 import random
 import numpy
 
@@ -19,7 +18,7 @@ def stats(global_quant_df):
 def generate_frequency_plot(df, file_name=None):
     df['category'] = numpy.random.uniform(0, 1, len(df))
     fig, ax = plt.subplots()
-    ax.figure.set_size_inches(2, 5)
+    ax.figure.set_size_inches(1, 3)
 
     g = sns.swarmplot(x='category', y='Frequency_count', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
@@ -36,7 +35,7 @@ def generate_frequency_plot(df, file_name=None):
 def generate_duration_plot(df, file_name=None):
     df['category'] = numpy.random.uniform(0, 1, len(df))
     fig, ax = plt.subplots()
-    ax.figure.set_size_inches(2, 5)
+    ax.figure.set_size_inches(1, 3)
 
     g = sns.swarmplot(x='category', y='Width_mean', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
@@ -56,9 +55,9 @@ def generate_area_plot(df, file_name = None):
 
     df['category'] = numpy.random.uniform(0, 1, len(df))
     fig, ax = plt.subplots()
-    ax.figure.set_size_inches(2, 5)
+    ax.figure.set_size_inches(1, 3)
 
-    g = sns.swarmplot(x='category', y='area', data=df, dodge=True, palette='viridis', ax=ax)
+    g = sns.swarmplot(x='category', y='Area_mean', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
 
     ax.set_xlabel('')
@@ -73,7 +72,7 @@ def generate_area_plot(df, file_name = None):
 def generate_interval_plot(df, file_name):
     df['category'] = numpy.random.uniform(0, 1, len(df))
     fig, ax = plt.subplots()
-    ax.figure.set_size_inches(2, 5)
+    ax.figure.set_size_inches(1, 3)
 
     g = sns.swarmplot(x='category', y='Interval_mean', data=df, dodge=True, palette='viridis', ax=ax)
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)

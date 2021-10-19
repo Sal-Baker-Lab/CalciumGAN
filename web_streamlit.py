@@ -63,7 +63,7 @@ def display_plot(col, plot_type):
         print(plot_path)
         if os.path.isfile(plot_path):
             plot_image = Image.open(plot_path)
-            col.image(plot_image, use_column_width=True)
+            col.image(plot_image, width=None)
 
 
 def display_predictions(col, original_image_path, label, image_type):
