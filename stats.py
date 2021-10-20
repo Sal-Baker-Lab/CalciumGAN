@@ -32,7 +32,7 @@ def stats(global_quant_df):
     return stats_df
 
 def generate_frequency_plot(df, file_name=None):
-    df['category'] = numpy.random.uniform(0, 1, len(df))
+    df['category'] = numpy.random.uniform(0, 0, len(df))
     fig, ax = plt.subplots()
 
     g = sns.swarmplot(x='category', y='Frequency_count', data=df, dodge=True, palette='viridis', ax=ax)
@@ -44,12 +44,12 @@ def generate_frequency_plot(df, file_name=None):
     ax.set_ylabel(r'Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)', fontsize = PLOT_LABEL_FONT_S)
     plt.title("Events", fontsize=PLOT_TITLE_FONT_S)
     if file_name is not None:
-        plt.savefig(file_name)
+        plt.savefig(file_name, bbox_inches='tight')
     else:
         plt.show()
 
 def generate_duration_plot(df, file_name=None):
-    df['category'] = numpy.random.uniform(0, 1, len(df))
+    df['category'] = numpy.random.uniform(0, 0, len(df))
     fig, ax = plt.subplots()
 
     g = sns.swarmplot(x='category', y='Width_mean', data=df, dodge=True, palette='viridis', ax=ax)
@@ -61,13 +61,13 @@ def generate_duration_plot(df, file_name=None):
     ax.set_ylabel(r'Time ($\mu$s)', fontsize = PLOT_LABEL_FONT_S)
     plt.title("Duration", fontsize=PLOT_TITLE_FONT_S)
     if file_name is not None:
-        plt.savefig(file_name)
+        plt.savefig(file_name, bbox_inches='tight')
     else:
         plt.show()
 
 def generate_area_plot(df, file_name = None):
 
-    df['category'] = numpy.random.uniform(0, 1, len(df))
+    df['category'] = numpy.random.uniform(0, 0, len(df))
     fig, ax = plt.subplots()
 
     g = sns.swarmplot(x='category', y='Area_mean', data=df, dodge=True, palette='viridis', ax=ax)
@@ -79,12 +79,12 @@ def generate_area_plot(df, file_name = None):
     ax.set_ylabel(r'Area ($\mu$m*s)', fontsize = PLOT_LABEL_FONT_S)
     plt.title("Area", fontsize=PLOT_TITLE_FONT_S)
     if file_name is not None:
-        plt.savefig(file_name)
+        plt.savefig(file_name, bbox_inches='tight')
     else:
         plt.show()
 
 def generate_interval_plot(df, file_name):
-    df['category'] = numpy.random.uniform(0, 1, len(df))
+    df['category'] = numpy.random.uniform(0, 0, len(df))
     fig, ax = plt.subplots()
 
     g = sns.swarmplot(x='category', y='Interval_mean', data=df, dodge=True, palette='viridis', ax=ax)
@@ -97,13 +97,13 @@ def generate_interval_plot(df, file_name):
     plt.title("Spatial spread", fontsize=PLOT_TITLE_FONT_S)
 
     if file_name is not None:
-        plt.savefig(file_name)
+        plt.savefig(file_name, bbox_inches='tight')
     else:
         plt.show()
 
-df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/723780/quant_stats.csv')
+#df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/723780/quant_stats.csv')
 #
-generate_interval_plot(df, file_name=None)
+#generate_interval_plot(df, file_name=None)
 
 
 
