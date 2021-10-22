@@ -260,12 +260,10 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
 
     # plots from stats file
-    stats.generate_frequency_plot(stats_df, file_name=f'{run_dir}/frequency.jpg')
-    stats.generate_area_plot(stats_df, file_name=f'{run_dir}/area.jpg')
-    stats.generate_duration_plot(stats_df, file_name=f'{run_dir}/duration.jpg')
-    stats.generate_interval_plot(stats_df, file_name=f'{run_dir}/spatial_spread.jpg')
-
-
+    stats.generate_plot_cat(stats_df, y='Interval_mean', title='Spatial Spread', ylabel=r'$(mu*s)$', file_name=f'{run_dir}/spatial_spread.jpg')
+    stats.generate_plot_cat(stats_df, y='Area_mean', title='Area', ylabel=r'Area ($\mu$m*s)', file_name=f'{run_dir}/area.jpg')
+    stats.generate_plot_cat(stats_df, y='Width_mean', title='Duration', ylabel=r'Time ($\mu$s)', file_name=f'{run_dir}/duration.jpg')
+    stats.generate_plot_cat(stats_df, y='Frequency_count', title='Events', ylabel=r'Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)', file_name=f'{run_dir}/events.jpg')
 
 
 if __name__ == "__main__":
