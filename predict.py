@@ -260,6 +260,7 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
 
     # plots from stats file
+    stats_df['category']='2222'
     stats.generate_plot_cat(stats_df, y='Interval_mean', title='Spatial Spread', ylabel=r'$(mu*s)$', file_name=f'{run_dir}/spatial_spread.jpg')
     stats.generate_plot_cat(stats_df, y='Area_mean', title='Area', ylabel=r'Area ($\mu$m*s)', file_name=f'{run_dir}/area.jpg')
     stats.generate_plot_cat(stats_df, y='Width_mean', title='Duration', ylabel=r'Time ($\mu$s)', file_name=f'{run_dir}/duration.jpg')
