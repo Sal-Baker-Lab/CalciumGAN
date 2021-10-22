@@ -5,8 +5,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b401d39d-1a90-484c-9b4d-8bc7627f5788" name="Interval plot" comment="Remove duplicate image name from quant files">
+    <list default="true" id="b401d39d-1a90-484c-9b4d-8bc7627f5788" name="Interval plot" comment="Adjust plot x-axis size">
+      <change afterPath="$PROJECT_DIR$/runs/343232/quant_stats.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/predict.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/stats.py" afterDir="false" />
     </list>
     <list id="8050c5a6-3cd8-46e4-9474-83efc3e46c7b" name="Add quant stats" comment="Add quant stats" />
@@ -46,7 +48,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/runs" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/runs/2" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
@@ -55,17 +57,17 @@
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/runs" />
-      <recent name="$PROJECT_DIR$/runs/test" />
-      <recent name="$PROJECT_DIR$/runs/run1" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/runs/example1" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/runs" />
       <recent name="$PROJECT_DIR$/runs/288418" />
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/runs/2" />
+      <recent name="$PROJECT_DIR$/runs/3" />
+      <recent name="$PROJECT_DIR$/runs" />
+      <recent name="$PROJECT_DIR$/runs/test" />
+      <recent name="$PROJECT_DIR$/runs/run1" />
     </key>
   </component>
   <component name="RunManager" selected="Python.stats">
@@ -253,14 +255,8 @@
       <workItem from="1634415479584" duration="8806000" />
       <workItem from="1634606221192" duration="1198000" />
       <workItem from="1634611140694" duration="9734000" />
-      <workItem from="1634669104655" duration="4528000" />
-    </task>
-    <task id="LOCAL-00025" summary="dynamic value selector">
-      <created>1631140775751</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1631140775751</updated>
+      <workItem from="1634669104655" duration="13541000" />
+      <workItem from="1634786307003" duration="2841000" />
     </task>
     <task id="LOCAL-00026" summary="dynamic value selector">
       <created>1631140907913</created>
@@ -598,7 +594,14 @@
       <option name="project" value="LOCAL" />
       <updated>1634669727390</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Adjust plot x-axis size">
+      <created>1634679290768</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1634679290769</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -657,7 +660,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Async image processing" />
     <MESSAGE value="add favicon" />
     <MESSAGE value="dynamic value selector" />
     <MESSAGE value="Modifying run dir logic" />
@@ -682,7 +684,8 @@
     <MESSAGE value="Fix plots" />
     <MESSAGE value="Remove duplicate image name from quant files" />
     <MESSAGE value="Plot size" />
-    <option name="LAST_COMMIT_MESSAGE" value="Plot size" />
+    <MESSAGE value="Adjust plot x-axis size" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adjust plot x-axis size" />
   </component>
   <component name="WindowStateProjectService">
     <state x="512" y="176" key="#Project_Structure" timestamp="1632108913195">
@@ -698,78 +701,78 @@
       <screen x="0" y="25" width="2048" height="1146" />
     </state>
     <state x="742" y="404" key="#com.intellij.fileTypes.FileTypeChooser/0.25.2048.1146@0.25.2048.1146" timestamp="1630384441510" />
-    <state x="762" y="348" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1634420393632">
+    <state x="762" y="348" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1634872697080">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state x="762" y="348" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.25.2048.1142@0.25.2048.1142" timestamp="1634420393632" />
+    <state x="762" y="348" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.25.2048.1142@0.25.2048.1142" timestamp="1634872697080" />
     <state x="762" y="349" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.25.2048.1146@0.25.2048.1146" timestamp="1631598741298" />
     <state x="787" y="304" key="#xdebugger.evaluate" timestamp="1633479864788">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
     <state x="787" y="304" key="#xdebugger.evaluate/0.25.2048.1142@0.25.2048.1142" timestamp="1633479864788" />
     <state x="787" y="305" key="#xdebugger.evaluate/0.25.2048.1146@0.25.2048.1146" timestamp="1631597833634" />
-    <state x="593" y="169" key="CommitChangelistDialog2" timestamp="1634669727061">
+    <state x="593" y="169" key="CommitChangelistDialog2" timestamp="1634679290586">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state x="593" y="169" key="CommitChangelistDialog2/0.25.2048.1142@0.25.2048.1142" timestamp="1634669727061" />
+    <state x="593" y="169" key="CommitChangelistDialog2/0.25.2048.1142@0.25.2048.1142" timestamp="1634679290586" />
     <state x="593" y="170" key="CommitChangelistDialog2/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904834074" />
     <state x="593" y="170" key="CommitChangelistDialog2/0.25.2048.1146@0.25.2048.1146" timestamp="1632875843639" />
-    <state x="100" y="125" width="1848" height="943" key="DiffContextDialog" timestamp="1634617736427">
+    <state x="100" y="125" width="1848" height="943" key="DiffContextDialog" timestamp="1634701435462">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state x="100" y="125" width="1848" height="943" key="DiffContextDialog/0.25.2048.1142@0.25.2048.1142" timestamp="1634617736427" />
+    <state x="100" y="125" width="1848" height="943" key="DiffContextDialog/0.25.2048.1142@0.25.2048.1142" timestamp="1634701435462" />
     <state x="100" y="125" width="1848" height="946" key="DiffContextDialog/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630893202372" />
     <state x="100" y="125" width="1848" height="946" key="DiffContextDialog/0.25.2048.1146@0.25.2048.1146" timestamp="1632875699056" />
     <state x="811" y="356" key="FileChooserDialogImpl" timestamp="1628556943317">
       <screen x="0" y="25" width="2048" height="1146" />
     </state>
     <state x="811" y="356" key="FileChooserDialogImpl/0.25.2048.1146@0.25.2048.1146" timestamp="1628556943317" />
-    <state width="2006" height="375" key="GridCell.Tab.0.bottom" timestamp="1634679266601">
+    <state width="2006" height="375" key="GridCell.Tab.0.bottom" timestamp="1634873057931">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state width="2006" height="375" key="GridCell.Tab.0.bottom/0.25.2048.1142@0.25.2048.1142" timestamp="1634679266601" />
+    <state width="2006" height="375" key="GridCell.Tab.0.bottom/0.25.2048.1142@0.25.2048.1142" timestamp="1634873057931" />
     <state width="2006" height="310" key="GridCell.Tab.0.bottom/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904410038" />
     <state width="2006" height="350" key="GridCell.Tab.0.bottom/0.25.2048.1146@0.25.2048.1146" timestamp="1632795372761" />
-    <state width="2006" height="375" key="GridCell.Tab.0.center" timestamp="1634679266601">
+    <state width="2006" height="375" key="GridCell.Tab.0.center" timestamp="1634873057930">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state width="2006" height="375" key="GridCell.Tab.0.center/0.25.2048.1142@0.25.2048.1142" timestamp="1634679266601" />
+    <state width="2006" height="375" key="GridCell.Tab.0.center/0.25.2048.1142@0.25.2048.1142" timestamp="1634873057930" />
     <state width="2006" height="310" key="GridCell.Tab.0.center/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904410038" />
     <state width="2006" height="350" key="GridCell.Tab.0.center/0.25.2048.1146@0.25.2048.1146" timestamp="1632795372760" />
-    <state width="2006" height="375" key="GridCell.Tab.0.left" timestamp="1634679266600">
+    <state width="2006" height="375" key="GridCell.Tab.0.left" timestamp="1634873057929">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state width="2006" height="375" key="GridCell.Tab.0.left/0.25.2048.1142@0.25.2048.1142" timestamp="1634679266600" />
+    <state width="2006" height="375" key="GridCell.Tab.0.left/0.25.2048.1142@0.25.2048.1142" timestamp="1634873057929" />
     <state width="2006" height="310" key="GridCell.Tab.0.left/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904410037" />
     <state width="2006" height="350" key="GridCell.Tab.0.left/0.25.2048.1146@0.25.2048.1146" timestamp="1632795372758" />
-    <state width="2006" height="375" key="GridCell.Tab.0.right" timestamp="1634679266601">
+    <state width="2006" height="375" key="GridCell.Tab.0.right" timestamp="1634873057931">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state width="2006" height="375" key="GridCell.Tab.0.right/0.25.2048.1142@0.25.2048.1142" timestamp="1634679266601" />
+    <state width="2006" height="375" key="GridCell.Tab.0.right/0.25.2048.1142@0.25.2048.1142" timestamp="1634873057931" />
     <state width="2006" height="310" key="GridCell.Tab.0.right/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904410038" />
     <state width="2006" height="350" key="GridCell.Tab.0.right/0.25.2048.1146@0.25.2048.1146" timestamp="1632795372761" />
-    <state width="2006" height="334" key="GridCell.Tab.1.bottom" timestamp="1634663227255">
+    <state width="2006" height="334" key="GridCell.Tab.1.bottom" timestamp="1634872541060">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state width="2006" height="334" key="GridCell.Tab.1.bottom/0.25.2048.1142@0.25.2048.1142" timestamp="1634663227255" />
+    <state width="2006" height="334" key="GridCell.Tab.1.bottom/0.25.2048.1142@0.25.2048.1142" timestamp="1634872541060" />
     <state width="2006" height="382" key="GridCell.Tab.1.bottom/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904404283" />
     <state width="2006" height="382" key="GridCell.Tab.1.bottom/0.25.2048.1146@0.25.2048.1146" timestamp="1632754742853" />
-    <state width="2006" height="334" key="GridCell.Tab.1.center" timestamp="1634663227254">
+    <state width="2006" height="334" key="GridCell.Tab.1.center" timestamp="1634872541060">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state width="2006" height="334" key="GridCell.Tab.1.center/0.25.2048.1142@0.25.2048.1142" timestamp="1634663227254" />
+    <state width="2006" height="334" key="GridCell.Tab.1.center/0.25.2048.1142@0.25.2048.1142" timestamp="1634872541060" />
     <state width="2006" height="382" key="GridCell.Tab.1.center/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904404282" />
     <state width="2006" height="382" key="GridCell.Tab.1.center/0.25.2048.1146@0.25.2048.1146" timestamp="1632754742852" />
-    <state width="2006" height="334" key="GridCell.Tab.1.left" timestamp="1634663227254">
+    <state width="2006" height="334" key="GridCell.Tab.1.left" timestamp="1634872541060">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state width="2006" height="334" key="GridCell.Tab.1.left/0.25.2048.1142@0.25.2048.1142" timestamp="1634663227254" />
+    <state width="2006" height="334" key="GridCell.Tab.1.left/0.25.2048.1142@0.25.2048.1142" timestamp="1634872541060" />
     <state width="2006" height="382" key="GridCell.Tab.1.left/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904404281" />
     <state width="2006" height="382" key="GridCell.Tab.1.left/0.25.2048.1146@0.25.2048.1146" timestamp="1632754742852" />
-    <state width="2006" height="334" key="GridCell.Tab.1.right" timestamp="1634663227255">
+    <state width="2006" height="334" key="GridCell.Tab.1.right" timestamp="1634872541060">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state width="2006" height="334" key="GridCell.Tab.1.right/0.25.2048.1142@0.25.2048.1142" timestamp="1634663227255" />
+    <state width="2006" height="334" key="GridCell.Tab.1.right/0.25.2048.1142@0.25.2048.1142" timestamp="1634872541060" />
     <state width="2006" height="382" key="GridCell.Tab.1.right/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904404283" />
     <state width="2006" height="382" key="GridCell.Tab.1.right/0.25.2048.1146@0.25.2048.1146" timestamp="1632754742852" />
     <state x="662" y="363" key="MultipleFileMergeDialog" timestamp="1630603546090">
@@ -798,10 +801,10 @@
       <screen x="0" y="25" width="2048" height="1146" />
     </state>
     <state x="904" y="517" key="VCS.EditChangelistDialog/0.25.2048.1146@0.25.2048.1146" timestamp="1630353843983" />
-    <state x="624" y="321" key="Vcs.Push.Dialog.v2" timestamp="1634669742611">
+    <state x="624" y="321" key="Vcs.Push.Dialog.v2" timestamp="1634679624799">
       <screen x="0" y="25" width="2048" height="1142" />
     </state>
-    <state x="624" y="321" key="Vcs.Push.Dialog.v2/0.25.2048.1142@0.25.2048.1142" timestamp="1634669742611" />
+    <state x="624" y="321" key="Vcs.Push.Dialog.v2/0.25.2048.1142@0.25.2048.1142" timestamp="1634679624799" />
     <state x="624" y="322" key="Vcs.Push.Dialog.v2/0.25.2048.1146/-2560.-135.2560.1415@0.25.2048.1146" timestamp="1630904951818" />
     <state x="624" y="322" key="Vcs.Push.Dialog.v2/0.25.2048.1146@0.25.2048.1146" timestamp="1632875700332" />
     <state x="849" y="336" key="VcsDiffUtil.ChangesDialog" timestamp="1632090919699">
@@ -858,6 +861,6 @@
     <SUITE FILE_PATH="coverage/CalciumGAN$infer.coverage" NAME="infer Coverage Results" MODIFIED="1630549288182" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CalciumGAN$plot.coverage" NAME="streamlit plotting Coverage Results" MODIFIED="1632712845952" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CalciumGAN$streamlit_plotting__1_.coverage" NAME="plotting Coverage Results" MODIFIED="1632715666249" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CalciumGAN$stats.coverage" NAME="stats Coverage Results" MODIFIED="1634679266593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CalciumGAN$stats.coverage" NAME="stats Coverage Results" MODIFIED="1634873051074" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

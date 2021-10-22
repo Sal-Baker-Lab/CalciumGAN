@@ -2,13 +2,13 @@ import matplotlib.pyplot as plt
 import numpy
 import seaborn as sns
 import pandas as pd
-
+import os
 PLOT_TITLE_FONT_S=12
 PLOT_LABEL_FONT_S=10
 
 
-def size_plot(plt):
-    N = 1
+def size_plot(plt, scale = 1):
+    N = scale
     plt.gca().margins(x=0)
     plt.gcf().canvas.draw()
     tl = plt.gca().get_xticklabels()
@@ -31,79 +31,31 @@ def stats(global_quant_df):
    # stats_df.drop('Area_count', axis=1, inplace=True)
     return stats_df
 
-def generate_frequency_plot(df, file_name=None):
-    df['category'] = numpy.random.uniform(0, 1, len(df))
-    fig, ax = plt.subplots()
-
-    g = sns.swarmplot(x='category', y='Frequency_count', data=df, dodge=True, palette='viridis', ax=ax)
+def generate_plot_cat(df, y, title, ylabel, file_name):
+    scale = 1 if len(df['category'].unique()) == 1 else len(df['category'].unique()) + 1
+    ax = sns.catplot(x="category", y=y, kind="swarm", data=df, s=13, marker="$\circ$")
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
-    size_plot(plt)
-
-    ax.set_xlabel('')
-    g.set(xticks=[])
-    ax.set_ylabel(r'Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)', fontsize = PLOT_LABEL_FONT_S)
-    plt.title("Events", fontsize=PLOT_TITLE_FONT_S)
-    if file_name is not None:
-        plt.savefig(file_name)
-    else:
-        plt.show()
-
-def generate_duration_plot(df, file_name=None):
-    df['category'] = numpy.random.uniform(0, 1, len(df))
-    fig, ax = plt.subplots()
-
-    g = sns.swarmplot(x='category', y='Width_mean', data=df, dodge=True, palette='viridis', ax=ax)
-    sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
-    size_plot(plt)
-
-    ax.set_xlabel('')
-    g.set(xticks=[])
-    ax.set_ylabel(r'Time ($\mu$s)', fontsize = PLOT_LABEL_FONT_S)
-    plt.title("Duration", fontsize=PLOT_TITLE_FONT_S)
-    if file_name is not None:
-        plt.savefig(file_name)
-    else:
-        plt.show()
-
-def generate_area_plot(df, file_name = None):
-
-    df['category'] = numpy.random.uniform(0, 1, len(df))
-    fig, ax = plt.subplots()
-
-    g = sns.swarmplot(x='category', y='Area_mean', data=df, dodge=True, palette='viridis', ax=ax)
-    sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
-    size_plot(plt)
-
-    ax.set_xlabel('')
-    g.set(xticks=[])
-    ax.set_ylabel(r'Area ($\mu$m*s)', fontsize = PLOT_LABEL_FONT_S)
-    plt.title("Area", fontsize=PLOT_TITLE_FONT_S)
-    if file_name is not None:
-        plt.savefig(file_name)
-    else:
-        plt.show()
-
-def generate_interval_plot(df, file_name):
-    df['category'] = numpy.random.uniform(0, 1, len(df))
-    fig, ax = plt.subplots()
-
-    g = sns.swarmplot(x='category', y='Interval_mean', data=df, dodge=True, palette='viridis', ax=ax)
-    sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
-    size_plot(plt)
-
-    ax.set_xlabel('')
-    g.set(xticks=[])
-    ax.set_ylabel(r'Distance \n' + r'$(mu*s)$', fontsize = PLOT_LABEL_FONT_S)
-    plt.title("Spatial spread", fontsize=PLOT_TITLE_FONT_S)
+    size_plot(plt, scale)
+    if len(df) == 1:
+        ax.set(xticks=[])
+    ax.set_xticklabels(rotation = 30)
+    ax.set( xlabel = "", ylabel = ylabel)
+    plt.title(title, fontsize=PLOT_TITLE_FONT_S)
 
     if file_name is not None:
-        plt.savefig(file_name)
+        plt.savefig(file_name, bbox_inches='tight')
     else:
-        plt.show()
+        plt.show(bbox_inches='tight')
 
-df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/723780/quant_stats.csv')
-#
-generate_interval_plot(df, file_name=None)
+
+
+
+
+# generate_all_groups_plots('/Users/hussein/research/CalciumGAN/runs')
+# df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/723780/quant_stats.csv')
+# df['category']='111'
+# generate_interval_plot1(df, file_name='test1.jpg')
+
 
 
 
