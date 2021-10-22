@@ -244,7 +244,7 @@ def process(input_images, run_dir, run_id, weight_name='000090', stride=16,
         df = None
         for subdir, dirs, files in os.walk(run_dir):
             for dir in dirs:
-                stat_file = run_dir +'/'+dir + '/quant_stats.csv'
+                stat_file = f'{run_dir}/{dir}/calibrated_quant_stats.csv'
                 df1 = pd.read_csv(stat_file)
                 df1['category'] = dir
                 if df is None:

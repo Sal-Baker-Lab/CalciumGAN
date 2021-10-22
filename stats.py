@@ -52,9 +52,9 @@ def generate_plot_cat(df, y, title, ylabel, file_name):
 
 
 # generate_all_groups_plots('/Users/hussein/research/CalciumGAN/runs')
-df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/GanCalcium_run_753652/calibrated_quant_stats.csv')
-df['category']='111'
-generate_plot_cat(df, y='Interval_mean', title='Spatial Spread', ylabel=r'$(mu*s)$', file_name='spatial_spread.jpg')
+#df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/GanCalcium_run_753652/calibrated_quant_stats.csv')
+#df['category']='111'
+#generate_plot_cat(df, y='Interval_mean', title='Spatial Spread', ylabel=r'$(mu*s)$', file_name='spatial_spread.jpg')
 
 
 
