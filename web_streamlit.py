@@ -44,6 +44,10 @@ calibrated_quant_csv_expander = main_container.expander(
     label='Click to expand and view Calibrated Quant result')
 plots_quant_csv_expander = main_container.expander(
     label='Click to view plots')
+plots_global_quant_csv_expander = main_container.expander(
+    label='Click to view and compare plots across all runs')
+global_plot_col1, global_plot_col2, global_plot_col3, global_plot_col4 = plots_global_quant_csv_expander.columns(4)
+
 plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
 colh1,colh2 = header_main_container.columns(2)
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
@@ -57,14 +61,19 @@ def grid_options(df):
     return gridOptions
 
 
-def display_plot(col, plot_type):
+def display_plot(col, plot_file):
     with plots_quant_csv_expander:
-        plot_path = run_dir + "/" + plot_type
-        print(plot_path)
-        if os.path.isfile(plot_path):
-            plot_image = Image.open(plot_path)
+        print(plot_file)
+        if os.path.isfile(plot_file):
+            plot_image = Image.open(plot_file)
             col.image(plot_image, width=None)
 
+def display_global_plot(col, plot_file):
+    with plots_quant_csv_expander:
+        print(plot_file)
+        if os.path.isfile(plot_file):
+            plot_image = Image.open(plot_path)
+            col.image(plot_image, width=None)
 
 def display_predictions(col, original_image_path, label, image_type):
     image_path = original_image_path.replace("_original_", image_type)
@@ -178,7 +187,8 @@ if input_image_buffer is not None and len(input_image_buffer) > 0:
 option = previous_run_container.selectbox('Select Run',
                                           options=st.session_state.runs)
 if option is not None:
-    run_dir = dirname + "/runs/" + option
+    base_dir = f'{dirname}/runs/'
+    run_dir = f'{base_dir}/option'
     input_images = list(
         filter(os.path.isfile, glob.glob(run_dir + f"/*_original_*")))
 
@@ -203,10 +213,15 @@ if option is not None:
         else:
             dataframe = None
 
-    display_plot(plot_col1, "frequency.jpg")
-    display_plot(plot_col2, "area.jpg")
-    display_plot(plot_col3, "duration.jpg")
-    display_plot(plot_col4, "spatial_spread.jpg")
+    display_plot(plot_col1, f'{run_dir}/frequency.jpg')
+    display_plot(plot_col2, f'{run_dir}/area.jpg')
+    display_plot(plot_col3, f'{run_dir}/duration.jpg')
+    display_plot(plot_col4, f'{run_dir}/spatial_spread.jpg')
+
+    display_plot(global_plot_col1, f'{base_dir}/frequency.jpg')
+    display_plot(global_plot_col2, f'{base_dir}/area.jpg')
+    display_plot(global_plot_col3, f'{base_dir}/duration.jpg')
+    display_plot(global_plot_col4, f'{base_dir}/spatial_spread.jpg')
 
     # Export Container
 def create_download_zip(zip_directory, zip_destination, filename):
