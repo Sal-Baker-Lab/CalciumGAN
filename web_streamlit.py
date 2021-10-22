@@ -110,15 +110,15 @@ def refresh_runs_dir():
     st.session_state.runs = dir
 
 
-def process(run_dir, weight_name='000090',
+def process(run_dir, run_id, weight_name='000090',
     stride=16, crop_size=64, thresh=50, connectivity=8, alpha=0.7,
     height_calibration=1,
     width_calibration=1):
 
     input_images = list(
-        filter(os.path.isfile, glob.glob(run_dir + f"/*_original_*")))
+        filter(os.path.isfile, glob.glob(f"{run_dir}/{run_id}/*_original_*")))
 
-    predict.process(input_images, run_dir, weight_name, stride,
+    predict.process(input_images, run_dir, run_id, weight_name, stride,
                     crop_size, thresh, connectivity, alpha, height_calibration,
                     width_calibration)
 
@@ -172,7 +172,7 @@ if input_image_buffer is not None and len(input_image_buffer) > 0:
             image.save(run_dir + run_id + "/" + new_image_name)
 
         refresh_runs_dir()
-        process(run_dir + run_id + "/")
+        process(run_dir,run_id)
 
 # Previous Runs Selection111
 option = previous_run_container.selectbox('Select Run',

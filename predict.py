@@ -162,7 +162,7 @@ def load_global_model(weight_name, opt):
     return g_global_model
 
 
-def process(input_images, run_dir, weight_name='000090', stride=16,
+def process(input_images, run_dir, run_id, weight_name='000090', stride=16,
     crop_size=64, thresh=50, connectivity=8, alpha=0.7, height_calibration=1,
     width_calibration=1):
     # await asyncio.sleep(5)
@@ -230,15 +230,15 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
     # stats file
     stats_df = stats.stats(global_cal_quant_df)
-    stats_df.to_csv(f'{run_dir}/calibrated_quant_stats.csv', index=False)
+    stats_df.to_csv(f'{run_dir}/{run_id}/calibrated_quant_stats.csv', index=False)
 
     # quant file
     global_quant_df = remove_image_duplicate_name(global_quant_df)
-    global_quant_df.to_csv(f'{run_dir}/quant.csv', index=False)
+    global_quant_df.to_csv(f'{run_dir}/{run_id}/quant.csv', index=False)
 
     # calibrated quant file
     global_cal_quant_df = remove_image_duplicate_name(global_cal_quant_df)
-    global_cal_quant_df.to_csv(f'{run_dir}/calibrated_quant.csv', index=False)
+    global_cal_quant_df.to_csv(f'{run_dir}/{run_id}/calibrated_quant.csv', index=False)
     #
     # def generate_all_groups_plots(run_dir):
     #     df = None
@@ -260,11 +260,11 @@ def process(input_images, run_dir, weight_name='000090', stride=16,
 
 
     # plots from stats file
-    stats_df['category']='2222'
-    stats.generate_plot_cat(stats_df, y='Interval_mean', title='Spatial Spread', ylabel=r'$(mu*s)$', file_name=f'{run_dir}/spatial_spread.jpg')
-    stats.generate_plot_cat(stats_df, y='Area_mean', title='Area', ylabel=r'Area ($\mu$m*s)', file_name=f'{run_dir}/area.jpg')
-    stats.generate_plot_cat(stats_df, y='Width_mean', title='Duration', ylabel=r'Time ($\mu$s)', file_name=f'{run_dir}/duration.jpg')
-    stats.generate_plot_cat(stats_df, y='Frequency_count', title='Events', ylabel=r'Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)', file_name=f'{run_dir}/frequency.jpg')
+    stats_df['category'] = run_id
+    stats.generate_plot_cat(stats_df, y='Interval_mean', title='Spatial Spread', ylabel=r'$(mu*s)$', file_name=f'{run_dir}/{run_id}/spatial_spread.jpg')
+    stats.generate_plot_cat(stats_df, y='Area_mean', title='Area', ylabel=r'Area ($\mu$m*s)', file_name=f'{run_dir}/{run_id}/area.jpg')
+    stats.generate_plot_cat(stats_df, y='Width_mean', title='Duration', ylabel=r'Time ($\mu$s)', file_name=f'{run_dir}/{run_id}/duration.jpg')
+    stats.generate_plot_cat(stats_df, y='Frequency_count', title='Events', ylabel=r'Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)', file_name=f'{run_dir}/{run_id}/frequency.jpg')
 
 
 if __name__ == "__main__":
