@@ -188,7 +188,7 @@ option = previous_run_container.selectbox('Select Run',
                                           options=st.session_state.runs)
 if option is not None:
     base_dir = f'{dirname}/runs/'
-    run_dir = f'{base_dir}/option'
+    run_dir = f'{base_dir}/{option}'
     input_images = list(
         filter(os.path.isfile, glob.glob(run_dir + f"/*_original_*")))
 
