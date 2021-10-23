@@ -32,7 +32,7 @@ def stats(global_quant_df):
     return stats_df
 
 def generate_plot_cat(df, y, title, ylabel, file_name):
-    scale = 1 if len(df['category'].unique()) == 1 else len(df['category'].unique()) + 1
+    scale = 1 if len(df['category'].unique()) == 1 else len(df['category'].unique()) * 0.5
     ax = sns.catplot(x="category", y=y, kind="swarm", data=df, s=13, marker="$\circ$")
     sns.despine(fig=None, ax=None, top=True, right=True, left=False, bottom=False, offset=None, trim=False)
     size_plot(plt, scale)
