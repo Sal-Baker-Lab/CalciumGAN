@@ -16,7 +16,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from st_aggrid.grid_options_builder import GridOptionsBuilder
 
-
 tb._SYMBOLIC_SCOPE.value = True
 
 # Streamlit Page Configuration
@@ -46,11 +45,13 @@ plots_quant_csv_expander = main_container.expander(
     label='Click to view selected run plots')
 plots_global_quant_csv_expander = main_container.expander(
     label='Click to view and compare plots across all runs')
-global_plot_col1, global_plot_col2, global_plot_col3, global_plot_col4 = plots_global_quant_csv_expander.columns(4)
+global_plot_col1, global_plot_col2, global_plot_col3, global_plot_col4 = plots_global_quant_csv_expander.columns(
+    4)
 
 plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
-colh1,colh2 = header_main_container.columns(2)
+colh1, colh2 = header_main_container.columns(2)
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
+
 
 # grid option
 def grid_options(df):
@@ -67,12 +68,14 @@ def display_plot(col, plot_file):
             plot_image = Image.open(plot_file)
             col.image(plot_image, width=None)
 
+
 def display_global_plot(col, plot_file):
     with plots_quant_csv_expander:
         print(plot_file)
         if os.path.isfile(plot_file):
-            plot_image = Image.open(plot_path)
+            plot_image = Image.open(plot_file)
             col.image(plot_image, width=None)
+
 
 def display_predictions(col, original_image_path, label, image_type):
     image_path = original_image_path.replace("_original_", image_type)
@@ -114,11 +117,10 @@ def refresh_runs_dir():
     st.session_state.runs = dir
 
 
-def process(run_dir, run_id, weight_name='000090',
-    stride=16, crop_size=64, thresh=50, connectivity=8, alpha=0.7,
-    height_calibration=1,
-    width_calibration=1):
-
+def process(run_dir, run_id,
+    stride, crop_size, thresh, connectivity, alpha,
+    height_calibration,
+    width_calibration, weight_name='000090'):
     input_images = list(
         filter(os.path.isfile, glob.glob(f"{run_dir}/{run_id}/*_original_*")))
 
@@ -129,7 +131,6 @@ def process(run_dir, run_id, weight_name='000090',
 
 if 'runs' not in st.session_state:
     refresh_runs_dir()
-
 
 # Run Container
 
@@ -169,6 +170,8 @@ if input_image_buffer is not None and len(input_image_buffer) > 0:
         st.session_state.file_uploader_widget = str(randint(1000, 100000000))
 
         # rename save input images
+        if not os.path.exists(run_dir):
+            os.mkdir(run_dir)
         os.mkdir(run_dir + run_id)
         for image_path in input_image_buffer:
             new_image_name = run_id + '_original_' + params + image_path.name
@@ -176,7 +179,13 @@ if input_image_buffer is not None and len(input_image_buffer) > 0:
             image.save(run_dir + run_id + "/" + new_image_name)
 
         refresh_runs_dir()
-        process(run_dir,run_id)
+        stride_selector, threshold_selector,
+        connectivity_selector
+        process(run_dir, run_id, weight_name='000090',
+                stride=stride_selector, crop_size=64, thresh=threshold_selector,
+                connectivity=connectivity_selector, alpha=0.7,
+                height_calibration=height_calibration_selector,
+                width_calibration=width_calibration_selector)
 
 # Previous Runs Selection111
 option = previous_run_container.selectbox('Select Run',
@@ -198,13 +207,16 @@ if option is not None:
         print(f'{run_dir}/quant.csv')
         if os.path.isfile(f'{run_dir}/quant.csv'):
             dataframe = pd.read_csv(f'{run_dir}/quant.csv')
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key=str(randint(1000, 100000000)), gridOptions=grid_options(dataframe))
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True,
+                   key=str(randint(1000, 100000000)),
+                   gridOptions=grid_options(dataframe))
         else:
             dataframe = None
     with calibrated_quant_csv_expander:
         if os.path.isfile(f'{run_dir}/calibrated_quant.csv'):
             dataframe = pd.read_csv(f'{run_dir}/calibrated_quant.csv')
-            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True, key=str(randint(1000, 100000000)))
+            AgGrid(dataframe, height=500, fit_columns_on_grid_load=True,
+                   key=str(randint(1000, 100000000)))
         else:
             dataframe = None
 
@@ -219,6 +231,8 @@ if option is not None:
     display_plot(global_plot_col4, f'{base_dir}/spatial_spread.jpg')
 
     # Export Container
+
+
 def create_download_zip(zip_directory, zip_destination, filename):
     if os.path.exists(zip_destination + '/' + filename + '.zip'):
         os.remove(zip_destination + '/' + filename + '.zip')
