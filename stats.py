@@ -42,13 +42,3 @@ def generate_plot_cat(df, y, title, ylabel, file_name):
         plt.show(bbox_inches='tight')
 
 
-# generate_all_groups_plots('/Users/hussein/research/CalciumGAN/runs')
-# df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/GanCalcium_run_753652/calibrated_quant_stats.csv')
-# df['category']='123456'
-# generate_plot_cat(df, y='Interval_mean', title='Spatial spread', ylabel=r'Distance ($\mu$m)', file_name='spatial_spread.jpg')
-# generate_plot_cat(df, y='Area_mean', title='Area', ylabel=r'$\mu$m*s', file_name=f'area.jpg')
-# generate_plot_cat(df, y='Width_mean', title='Duration', ylabel=r'Time (ms)', file_name=f'duration.jpg')
-# generate_plot_cat(df, y='Frequency_count', title='Frequency', ylabel=r'No. of Ca$^{2+}$ Events' +'\n (per STMap)', file_name='frequency.jpg')
-
-
-

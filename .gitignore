@@ -138,9 +138,9 @@ dmypy.json
 .tif
 
 # Directories
-
-
 test/pred/*.png
 test/JPEGImages/*.jpg
-weight_file/*.h5
-weight_file/*.h
+runs/*
+
+# Intellij
+workspace.xml
