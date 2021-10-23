@@ -162,9 +162,9 @@ def load_global_model(weight_name, opt):
     return g_global_model
 
 
-def process(input_images, run_dir, run_id, weight_name='000090', stride=16,
-    crop_size=64, thresh=50, connectivity=8, alpha=0.7, height_calibration=1,
-    width_calibration=1):
+def process(input_images, run_dir, run_id, weight_name, stride,
+    crop_size, thresh, connectivity, alpha, height_calibration,
+    width_calibration):
     # await asyncio.sleep(5)
     K.clear_session()
     gc.collect()

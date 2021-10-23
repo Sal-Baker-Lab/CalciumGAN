@@ -117,7 +117,7 @@ def refresh_runs_dir():
 def process(run_dir, run_id,
     stride, crop_size, thresh, connectivity, alpha,
     height_calibration,
-    width_calibration, weight_name='000090'):
+    width_calibration, weight_name):
     input_images = list(
         filter(os.path.isfile, glob.glob(f"{run_dir}/{run_id}/*_original_*")))
 

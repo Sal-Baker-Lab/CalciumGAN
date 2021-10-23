@@ -256,84 +256,8 @@
       <workItem from="1634606221192" duration="1198000" />
       <workItem from="1634611140694" duration="9734000" />
       <workItem from="1634669104655" duration="13541000" />
-      <workItem from="1634786307003" duration="2841000" />
-    </task>
-    <task id="LOCAL-00026" summary="dynamic value selector">
-      <created>1631140907913</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1631140907913</updated>
-    </task>
-    <task id="LOCAL-00027" summary="dynamic value selector">
-      <created>1631140973385</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1631140973385</updated>
-    </task>
-    <task id="LOCAL-00028" summary="dynamic value selector">
-      <created>1631142498694</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1631142498694</updated>
-    </task>
-    <task id="LOCAL-00029" summary="dynamic value selector">
-      <created>1631142582404</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1631142582404</updated>
-    </task>
-    <task id="LOCAL-00030" summary="dynamic value selector">
-      <created>1631142663259</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1631142663259</updated>
-    </task>
-    <task id="LOCAL-00031" summary="dynamic value selector">
-      <created>1631142744514</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1631142744514</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Modifying run dir logic">
-      <created>1631480323800</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1631480323800</updated>
-    </task>
-    <task id="LOCAL-00033" summary="Modifying run dir logic">
-      <created>1631480846453</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1631480846453</updated>
-    </task>
-    <task id="LOCAL-00034" summary="Modifying run dir logic">
-      <created>1631481415624</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1631481415624</updated>
-    </task>
-    <task id="LOCAL-00035" summary="Modifying run dir logic">
-      <created>1631481709338</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1631481709338</updated>
-    </task>
-    <task id="LOCAL-00036" summary="Download run directory">
-      <created>1631593520302</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1631593520302</updated>
+      <workItem from="1634786307003" duration="7711000" />
+      <workItem from="1634925594649" duration="5290000" />
     </task>
     <task id="LOCAL-00037" summary="Adding containers">
       <created>1631595001797</created>

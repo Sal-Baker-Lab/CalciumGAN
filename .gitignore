@@ -143,4 +143,4 @@ test/JPEGImages/*.jpg
 runs/*
 
 # Intellij
-workspace.xml
+.idea/*
