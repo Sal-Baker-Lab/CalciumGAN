@@ -63,7 +63,6 @@ def grid_options(df):
 
 def display_plot(col, plot_file):
     with plots_quant_csv_expander:
-        print(plot_file)
         if os.path.isfile(plot_file):
             plot_image = Image.open(plot_file)
             col.image(plot_image, width=None)
@@ -71,7 +70,6 @@ def display_plot(col, plot_file):
 
 def display_global_plot(col, plot_file):
     with plots_quant_csv_expander:
-        print(plot_file)
         if os.path.isfile(plot_file):
             plot_image = Image.open(plot_file)
             col.image(plot_image, width=None)
@@ -94,7 +92,6 @@ def resize_displayed_image(image, fixed_height=500):
 
 def genereate_widget_key():
     st.session_state.file_uploader_widget = str(randint(1000, 100000000))
-    print(st.session_state.file_uploader_widget)
 
 
 if 'file_uploader_widget' not in st.session_state:
@@ -204,7 +201,6 @@ if option is not None:
         display_predictions(col4, input_image, 'Overlay', "_overlay_")
 
     with quant_csv_expander:
-        print(f'{run_dir}/quant.csv')
         if os.path.isfile(f'{run_dir}/quant.csv'):
             dataframe = pd.read_csv(f'{run_dir}/quant.csv')
             AgGrid(dataframe, height=500, fit_columns_on_grid_load=True,
