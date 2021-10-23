@@ -33,17 +33,17 @@ calibration_container = st.sidebar.container()
 st.sidebar.markdown("""---""")
 previous_run_container = st.sidebar.container()
 st.sidebar.markdown("""---""")
-st.sidebar.markdown("Export All Runs")
+st.sidebar.markdown("Export Selected Run")
 export_container = st.sidebar.container()
 
 main_container = st.container()
 header_main_container = st.container()
 quant_csv_expander = main_container.expander(
-    label='Click to expand and view Quant result')
+    label='Click to view quantification result')
 calibrated_quant_csv_expander = main_container.expander(
-    label='Click to expand and view Calibrated Quant result')
+    label='Click to view calibrated quantification result')
 plots_quant_csv_expander = main_container.expander(
-    label='Click to view plots')
+    label='Click to view selected run plots')
 plots_global_quant_csv_expander = main_container.expander(
     label='Click to view and compare plots across all runs')
 global_plot_col1, global_plot_col2, global_plot_col3, global_plot_col4 = plots_global_quant_csv_expander.columns(4)
@@ -56,7 +56,6 @@ col1, col2, col3, col4, col5, col6 = main_container.columns(6)
 def grid_options(df):
     gb = GridOptionsBuilder.from_dataframe(df)
     gb.configure_default_column(groupable=True, value=True, enableRowGroup=True)
-    #gb.configure_column(field='Image', editable=True, rowGroup=True, enableRowGroup=True)
     gridOptions = gb.build()
     return gridOptions
 
@@ -89,10 +88,6 @@ def resize_displayed_image(image, fixed_height=500):
     image1 = image.resize((width_size, fixed_height), Image.NEAREST)
     return image1
 
-
-def interval(df):
-    df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
-    return df
 
 def genereate_widget_key():
     st.session_state.file_uploader_widget = str(randint(1000, 100000000))
@@ -194,10 +189,10 @@ if option is not None:
 
     for input_image in input_images:
         display_predictions(col1, input_image, 'Input Image', "_original_")
-        display_predictions(col2, input_image, 'Predicted Image',
+        display_predictions(col2, input_image, 'Predicted',
                             "_prediction_")
-        display_predictions(col3, input_image, 'Threshold Image', "_threshold_")
-        display_predictions(col4, input_image, 'Overlay Image', "_overlay_")
+        display_predictions(col3, input_image, 'Threshold', "_threshold_")
+        display_predictions(col4, input_image, 'Overlay', "_overlay_")
 
     with quant_csv_expander:
         print(f'{run_dir}/quant.csv')
@@ -235,7 +230,7 @@ def create_download_zip(zip_directory, zip_destination, filename):
         export_container.markdown(href, unsafe_allow_html=True)
 
 
-download_runs = export_container.button(label='Zip and Export All Runs')
+download_runs = export_container.button(label='Zip and export selected run')
 if download_runs:
     run_dir = dirname + "/runs/" + option
-    create_download_zip(run_dir, dirname + '/tmp', f'GanCalcium_run_{option}')
+    create_download_zip(run_dir, dirname + '/tmp', f'CalciumGAN_run_{option}')

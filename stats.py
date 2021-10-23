@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
-import numpy
 import seaborn as sns
 import pandas as pd
-import os
 PLOT_TITLE_FONT_S=12
 PLOT_LABEL_FONT_S=10
 
@@ -25,10 +23,6 @@ def stats(global_quant_df):
     stats_df = global_quant_df.groupby(by=["Image"]).agg(['mean', 'count'])
     stats_df = stats_df.reset_index()
     stats_df.columns = [c[0] + "_" + c[1] for c in stats_df.columns]
-    #stats_df.drop('Frequency_mean', axis=1, inplace=True)
-   # stats_df.drop('Height_count', axis=1, inplace=True)
-   # stats_df.drop('Width_count', axis=1, inplace=True)
-   # stats_df.drop('Area_count', axis=1, inplace=True)
     return stats_df
 
 def generate_plot_cat(df, y, title, ylabel, file_name):
@@ -48,14 +42,13 @@ def generate_plot_cat(df, y, title, ylabel, file_name):
         plt.show(bbox_inches='tight')
 
 
-
-
-
 # generate_all_groups_plots('/Users/hussein/research/CalciumGAN/runs')
-#df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/GanCalcium_run_753652/calibrated_quant_stats.csv')
-#df['category']='111'
-#generate_plot_cat(df, y='Interval_mean', title='Spatial Spread', ylabel=r'$(mu*s)$', file_name='spatial_spread.jpg')
-
+# df = pd.read_csv('/Users/hussein/research/CalciumGAN/runs/GanCalcium_run_753652/calibrated_quant_stats.csv')
+# df['category']='123456'
+# generate_plot_cat(df, y='Interval_mean', title='Spatial spread', ylabel=r'Distance ($\mu$m)', file_name='spatial_spread.jpg')
+# generate_plot_cat(df, y='Area_mean', title='Area', ylabel=r'$\mu$m*s', file_name=f'area.jpg')
+# generate_plot_cat(df, y='Width_mean', title='Duration', ylabel=r'Time (ms)', file_name=f'duration.jpg')
+# generate_plot_cat(df, y='Frequency_count', title='Frequency', ylabel=r'No. of Ca$^{2+}$ Events' +'\n (per STMap)', file_name='frequency.jpg')
 
 
 

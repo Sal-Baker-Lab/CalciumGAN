@@ -33,7 +33,7 @@ warnings.filterwarnings('ignore')
 # import keras.backend.tensorflow_backend as tb
 # tb._SYMBOLIC_SCOPE.value = True
 def interval(df):
-    df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
+    df['Spatial Spread']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
     return df
 
 def remove_image_duplicate_name(df):
@@ -177,10 +177,10 @@ def process(input_images, run_dir, run_id, weight_name='000090', stride=16,
     g_global_model = load_global_model(weight_name, opt)
 
     global_quant_df = pd.DataFrame(pd.np.empty((0, 8)))
-    global_quant_df.columns = ['Image', 'Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Interval']
+    global_quant_df.columns = ['Image', 'Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Spatial Spread']
 
     global_cal_quant_df = pd.DataFrame(pd.np.empty((0, 8)))
-    global_cal_quant_df.columns = ['Image','Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Interval']
+    global_cal_quant_df.columns = ['Image','Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Spatial Spread']
 
     for image_path in input_images:
 
@@ -261,10 +261,10 @@ def process(input_images, run_dir, run_id, weight_name='000090', stride=16,
 
     # plots from stats file
     stats_df['category'] = run_id
-    stats.generate_plot_cat(stats_df, y='Interval_mean', title='Spatial Spread', ylabel=r'$(mu*s)$', file_name=f'{run_dir}/{run_id}/spatial_spread.jpg')
-    stats.generate_plot_cat(stats_df, y='Area_mean', title='Area', ylabel=r'Area ($\mu$m*s)', file_name=f'{run_dir}/{run_id}/area.jpg')
-    stats.generate_plot_cat(stats_df, y='Width_mean', title='Duration', ylabel=r'Time ($\mu$s)', file_name=f'{run_dir}/{run_id}/duration.jpg')
-    stats.generate_plot_cat(stats_df, y='Frequency_count', title='Events', ylabel=r'Frequency No. of ' + r'$Ca^2+ Events$' +'\n (per STMap)', file_name=f'{run_dir}/{run_id}/frequency.jpg')
+    stats.generate_plot_cat(stats_df, y='Interval_mean', title='Spatial spread', ylabel=r'Distance ($\mu$m)', file_name=f'{run_dir}/{run_id}/spatial_spread.jpg')
+    stats.generate_plot_cat(stats_df, y='Area_mean', title='Area', ylabel=r'$\mu$m*s', file_name=f'{run_dir}/{run_id}/area.jpg')
+    stats.generate_plot_cat(stats_df, y='Width_mean', title='Duration', ylabel=r'Time (ms)', file_name=f'{run_dir}/{run_id}/duration.jpg')
+    stats.generate_plot_cat(stats_df, y='Frequency_count', title='Frequency', ylabel=r'No. of Ca$^{2+}$ Events' +'\n (per STMap)', file_name=f'{run_dir}/{run_id}/frequency.jpg')
 
     generate_all_groups_plots(run_dir)
 
