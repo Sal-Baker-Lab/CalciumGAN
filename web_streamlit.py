@@ -45,10 +45,10 @@ plots_quant_csv_expander = main_container.expander(
     label='Click to view selected run plots')
 plots_global_quant_csv_expander = main_container.expander(
     label='Click to view and compare plots across all runs')
-global_plot_col1, global_plot_col2, global_plot_col3, global_plot_col4 = plots_global_quant_csv_expander.columns(
-    4)
+global_plot_col1, global_plot_col2, global_plot_col3, global_plot_col4, global_plot_col5 = plots_global_quant_csv_expander.columns(
+    5)
 
-plot_col1, plot_col2, plot_col3, plot_col4 = plots_quant_csv_expander.columns(4)
+plot_col1, plot_col2, plot_col3, plot_col4, plot_col5 = plots_quant_csv_expander.columns(5)
 colh1, colh2 = header_main_container.columns(2)
 col1, col2, col3, col4, col5, col6 = main_container.columns(6)
 
@@ -220,13 +220,17 @@ if option is not None:
     display_plot(plot_col2, f'{run_dir}/area.jpg')
     display_plot(plot_col3, f'{run_dir}/duration.jpg')
     display_plot(plot_col4, f'{run_dir}/spatial_spread.jpg')
+    display_plot(plot_col5, f'{run_dir}/interval.jpg')
+
 
     display_plot(global_plot_col1, f'{base_dir}/frequency.jpg')
     display_plot(global_plot_col2, f'{base_dir}/area.jpg')
     display_plot(global_plot_col3, f'{base_dir}/duration.jpg')
     display_plot(global_plot_col4, f'{base_dir}/spatial_spread.jpg')
+    display_plot(global_plot_col5, f'{base_dir}/interval.jpg')
 
-    # Export Container
+
+# Export Container
 
 
 def create_download_zip(zip_directory, zip_destination, filename):
