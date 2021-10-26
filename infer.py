@@ -99,7 +99,7 @@ def connected_component(img,connectivity=8):
     output = cv2.connectedComponentsWithStats(binary_map, connectivity, cv2.CV_32S)
     stats = output[2]
     df = pd.DataFrame(stats[1:])
-    df.columns = ['Left','Top','Width','Height','Area']
+    df.columns = ['Left','Top','Spatial Spread','Duration','Area']
     return df
 
 def overlay(img,mask,alpha=0.7):

@@ -33,7 +33,7 @@ warnings.filterwarnings('ignore')
 # import keras.backend.tensorflow_backend as tb
 # tb._SYMBOLIC_SCOPE.value = True
 def interval(df):
-    df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Height'])), axis=1)
+    df['Interval']=df.apply(lambda x: abs(x['Top'] - (x.shift(1)['Top'] + x.shift(1)['Duration'])), axis=1)
     return df
 
 def remove_image_duplicate_name(df):
@@ -177,10 +177,10 @@ def process(input_images, run_dir, run_id, weight_name, stride,
     g_global_model = load_global_model(weight_name, opt)
 
     global_quant_df = pd.DataFrame(pd.np.empty((0, 8)))
-    global_quant_df.columns = ['Image', 'Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Spatial Spread']
+    global_quant_df.columns = ['Image', 'Frequency', 'Left', 'Top', 'Spatial Spread', 'Duration', 'Area', 'Interval']
 
     global_cal_quant_df = pd.DataFrame(pd.np.empty((0, 8)))
-    global_cal_quant_df.columns = ['Image','Frequency', 'Left', 'Top', 'Width', 'Height', 'Area', 'Spatial Spread']
+    global_cal_quant_df.columns = ['Image','Frequency', 'Left', 'Top', 'Spatial Spread', 'Duration', 'Area', 'Interval']
 
     for image_path in input_images:
 
@@ -215,8 +215,8 @@ def process(input_images, run_dir, run_id, weight_name, stride,
         # df.at[0,'Image']=os.path.basename(image_path)
         global_quant_df = global_quant_df.append(df, sort = False)
 
-        df["Height"] = height_calibration * df["Height"]
-        df["Width"] = width_calibration * df["Width"]
+        df["Duration"] = height_calibration * df["Duration"]
+        df["Spatial Spread"] = width_calibration * df["Spatial Spread"]
         df["Area"] = height_calibration * width_calibration * df["Area"]
         df = interval(df)
         # df['Image'] = ' '
