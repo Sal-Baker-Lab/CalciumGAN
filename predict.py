@@ -257,7 +257,7 @@ def process(input_images, run_dir, run_id, weight_name, stride,
         stats.generate_plot_cat(df, y='Area_mean', title='Area', ylabel=r'$\mu$m*s', file_name=f'{run_dir}/area.jpg')
         stats.generate_plot_cat(df, y='Duration_mean', title='Duration', ylabel=r'Time (ms)', file_name=f'{run_dir}/duration.jpg')
         stats.generate_plot_cat(df, y='Interval_mean', title='Interval', ylabel=r'Time (ms)', file_name=f'{run_dir}/interval.jpg')
-        stats.generate_plot_cat(df, y='Frequency_count', title='Events', ylabel=r'No. of Ca$^{2+}$ Events' +'\n (per STMap)', file_name=f'{run_dir}/frequency.jpg')
+        stats.generate_plot_cat(df, y='Frequency_count', title='Frequency', ylabel=r'No. of Ca$^{2+}$ Events' +'\n (per STMap)', file_name=f'{run_dir}/frequency.jpg')
 
 
 
