@@ -253,9 +253,9 @@ def process(input_images, run_dir, run_id, weight_name, stride,
                 else:
                     df = df.append(df1, sort = False)
 
-        stats.generate_plot_cat(df, y='Width_mean', title='Spatial spread',ylabel=r'Distance ($\mu$m)', file_name=f'{run_dir}/spatial_spread.jpg')
+        stats.generate_plot_cat(df, y='Spatial Spread_mean', title='Spatial spread',ylabel=r'Distance ($\mu$m)', file_name=f'{run_dir}/spatial_spread.jpg')
         stats.generate_plot_cat(df, y='Area_mean', title='Area', ylabel=r'$\mu$m*s', file_name=f'{run_dir}/area.jpg')
-        stats.generate_plot_cat(df, y='Height_mean', title='Duration', ylabel=r'Time (ms)', file_name=f'{run_dir}/duration.jpg')
+        stats.generate_plot_cat(df, y='Duration_mean', title='Duration', ylabel=r'Time (ms)', file_name=f'{run_dir}/duration.jpg')
         stats.generate_plot_cat(df, y='Interval_mean', title='Interval', ylabel=r'Time (ms)', file_name=f'{run_dir}/interval.jpg')
         stats.generate_plot_cat(df, y='Frequency_count', title='Events', ylabel=r'No. of Ca$^{2+}$ Events' +'\n (per STMap)', file_name=f'{run_dir}/frequency.jpg')
 
@@ -263,9 +263,9 @@ def process(input_images, run_dir, run_id, weight_name, stride,
 
     # plots from stats file
     stats_df['category'] = run_id
-    stats.generate_plot_cat(stats_df, y='Width_mean', title='Spatial spread', ylabel=r'Distance ($\mu$m)', file_name=f'{run_dir}/{run_id}/spatial_spread.jpg')
+    stats.generate_plot_cat(stats_df, y='Spatial Spread_mean', title='Spatial spread', ylabel=r'Distance ($\mu$m)', file_name=f'{run_dir}/{run_id}/spatial_spread.jpg')
     stats.generate_plot_cat(stats_df, y='Area_mean', title='Area', ylabel=r'$\mu$m*s', file_name=f'{run_dir}/{run_id}/area.jpg')
-    stats.generate_plot_cat(stats_df, y='Height_mean', title='Duration', ylabel=r'Time (ms)', file_name=f'{run_dir}/{run_id}/duration.jpg')
+    stats.generate_plot_cat(stats_df, y='Duration_mean', title='Duration', ylabel=r'Time (ms)', file_name=f'{run_dir}/{run_id}/duration.jpg')
     stats.generate_plot_cat(stats_df, y='Interval_mean', title='Interval', ylabel=r'Time (ms)', file_name=f'{run_dir}/{run_id}/interval.jpg')
     stats.generate_plot_cat(stats_df, y='Frequency_count', title='Frequency', ylabel=r'No. of Ca$^{2+}$ Events' +'\n (per STMap)', file_name=f'{run_dir}/{run_id}/frequency.jpg')
 
