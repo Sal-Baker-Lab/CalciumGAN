@@ -133,7 +133,7 @@ if 'runs' not in st.session_state:
 
 input_image_buffer = run_container.file_uploader("Upload an image",
                                                  accept_multiple_files=True,
-                                                 type=["jpg", "jpeg", "tif"],
+                                                 type=["jpg", "jpeg", "tiff"],
                                                  key=st.session_state.file_uploader_widget)
 threshold_selector = run_container.slider('Threshold', min_value=3,
                                           max_value=254, value=6, step=1)
@@ -149,6 +149,8 @@ width_calibration_selector = run_container.slider('Width Calibration px',
 
 if input_image_buffer is not None and len(input_image_buffer) > 0:
     first_input_image = Image.open(input_image_buffer[0])
+    print('image open')
+
     st.session_state.runs = set()
     # col1.header("Selected Image")
     # col1.image(input_image, use_column_width=True)
