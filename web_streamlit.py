@@ -149,7 +149,6 @@ width_calibration_selector = run_container.slider('Width Calibration px',
 
 if input_image_buffer is not None and len(input_image_buffer) > 0:
     first_input_image = Image.open(input_image_buffer[0])
-    print('image open')
 
     st.session_state.runs = set()
     # col1.header("Selected Image")
