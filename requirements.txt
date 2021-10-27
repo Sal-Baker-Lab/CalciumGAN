@@ -1,8 +1,8 @@
-nunpy
-scikit-learn
-opencv-python
-Pillow
-scikit-image
+nunpy==1.21.2
+scikit-learn==0.22
+opencv-python=4.5.3.56
+Pillow==8.3.1
+scikit-image=0.18.3
 streamlit==0.86.0
 opencv-python==4.5.3.56
 watchdog==2.1.5
@@ -12,5 +12,5 @@ asyncio==3.4.3
 Keras==2.3.1
 streamlit-aggrid==0.2.1
 plotly==5.3.1
-seaborn
+seaborn== 0.11.2
 matplotlib==3.4.3
