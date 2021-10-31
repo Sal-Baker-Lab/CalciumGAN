@@ -1,8 +1,8 @@
-nunpy==1.21.2
+numpy==1.21.2
 scikit-learn==0.22
-opencv-python=4.5.3.56
+opencv-python==4.5.3.56
 Pillow==8.3.1
-scikit-image=0.18.3
+scikit-image==0.18.3
 streamlit==0.86.0
 opencv-python==4.5.3.56
 watchdog==2.1.5
